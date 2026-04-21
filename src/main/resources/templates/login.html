@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>login</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+
+            <div class="card shadow">
+                <div class="card-body">
+
+                    <h3 class="text-center mb-4">login</h3>
+
+                    <form th:action="@{/users/login}" method="post">
+
+                        <div class="mb-3">
+                            <label>email</label>
+                            <input type="email" name="email" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>password</label>
+                            <input type="password" name="password" class="form-control">
+                        </div>
+
+                        <button class="btn btn-success w-100" type="submit">
+                            login
+                        </button>
+
+                        <!-- register link -->
+                        <a href="/users/register" class="text-center mt-3 d-block">New User? Register Here</a>
+
+                    </form>
+
+                    <p class="text-danger mt-3" th:if="${error}">
+                        invalid email or password
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
