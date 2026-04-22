@@ -1,11 +1,19 @@
 package com.alexander.hotel_reservation.dto;
 
-public class LoginRequest {
+public class CreateUserDto {
 
+    private String name;
     private String email;
     private String password;
 
-    // getters and setters
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getEmail() {
         return email;

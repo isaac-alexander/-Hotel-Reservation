@@ -1,0 +1,21 @@
+Hotel Reservation Application
+
+Core Functional Modules
+User Management: Secure registration and login using Spring Security,
+with role-based access for Admins and Customers.
+
+Hotel & Room Inventory: Management interfaces for admins to add, edit, or delete
+hotel details and room types (e.g., Single, Studio, Queen).
+
+Search & Availability: A filtering system allowing users to search for room,
+check-in/check-out dates, and guest count.
+
+Booking Engine: Logic to calculate total prices, check for double-bookings,
+and generate unique confirmation codes.
+
+Email functionality: send emails for booking status i.e confirmed, cancelled,
+rescheduled.
+
+Payment Integration: Support for gateways like Remita or Paystack for secure
+transactions.
+

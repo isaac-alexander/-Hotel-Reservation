@@ -1,11 +1,11 @@
 package com.alexander.hotel_reservation.service.impl;
 
-import com.alexander.hotel_reservation.dto.UserRequest;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.repository.UserRepository;
 import com.alexander.hotel_reservation.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,30 +16,34 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+    // register user
     @Override
-    @Transactional // required for insert
-    public void register(UserRequest request) {
+    public void register(User user) {
 
-        // check if email already exists
-        User existingUser = userRepository.findByEmail(request.getEmail());
+        // set default role as customer
+        user.setRole("customer");
 
-        if (existingUser != null) {
-            throw new RuntimeException("email already exists");
-        }
-
-        // insert into database
-        userRepository.insertUser(
-                request.getName(),
-                request.getEmail(),
-                request.getPassword(),
-                "CUSTOMER"
-        );
+        userRepository.save(user);
     }
 
+    // login logic using optional
     @Override
     public User login(String email, String password) {
 
-        return userRepository.login(email, password);
-    }
+        // find user by email
+        Optional<User> foundUser = userRepository.findByEmail(email);
 
+        // check if user exists
+        if (foundUser.isPresent()) {
+
+            User user = foundUser.get();
+
+            // compare password
+            if (user.getPassword().equals(password)) {
+                return user;
+            }
+        }
+
+        return null;
+    }
 }
