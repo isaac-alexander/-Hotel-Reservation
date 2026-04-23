@@ -10,56 +10,65 @@
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
-<body>
+<body class="bg-light">
 
 <div class="container mt-5">
 
-    <div class="card shadow">
-        <div class="card-body">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
 
-            <h3 class="text-center mb-4">register</h3>
+            <div class="card shadow p-4">
 
-            <!-- success -->
-            <div th:if="${success}" class="alert alert-success text-center" id="msg">
-                <span th:text="${success}"></span>
-            </div>
+                <!-- title -->
+                <h3 class="text-center mb-4">register</h3>
 
-            <form th:action="@{/users/register}" th:object="${user}" method="post">
-
-                <div class="mb-3">
-                    <label>name</label>
-                    <input type="text" th:field="*{name}" class="form-control">
+                <!-- success message -->
+                <div th:if="${success}" class="alert alert-success text-center" id="successMsg">
+                    <span th:text="${success}"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label>email</label>
-                    <input type="email" th:field="*{email}" class="form-control">
-                </div>
+                <!-- form -->
+                <form th:action="@{/register}" th:object="${user}" method="post">
 
-                <div class="mb-3">
-                    <label>password</label>
-                    <input type="password" th:field="*{password}" class="form-control">
-                </div>
+                    <!-- name -->
+                    <div class="mb-3">
+                        <label>name</label>
+                        <input type="text" th:field="*{name}" class="form-control" placeholder="enter name" required>
+                    </div>
 
-                <button class="btn btn-outline-primary w-100">
-                    register
-                </button>
+                    <!-- email -->
+                    <div class="mb-3">
+                        <label>email</label>
+                        <input type="email" th:field="*{email}" class="form-control" placeholder="enter email" required>
+                    </div>
 
-                <!-- go to login -->
-                <a href="/users/login" class="d-block text-center mt-3">
-                    already have account? login
+                    <!-- password -->
+                    <div class="mb-3">
+                        <label>password</label>
+                        <input type="password" th:field="*{password}" class="form-control" placeholder="enter password" required>
+                    </div>
+
+                    <!-- button -->
+                    <button class="btn btn-primary w-100">register</button>
+
+                </form>
+
+                <!-- login link -->
+                <a href="/login" class="d-block text-center mt-3">
+                    already have an account? login
                 </a>
 
-            </form>
+            </div>
 
         </div>
     </div>
 
 </div>
 
+<!-- auto hide success -->
 <script>
-    setTimeout(function () {
-        let msg = document.getElementById("msg");
+    setTimeout(() => {
+        let msg = document.getElementById("successMsg");
         if (msg) msg.style.display = "none";
     }, 5000);
 </script>

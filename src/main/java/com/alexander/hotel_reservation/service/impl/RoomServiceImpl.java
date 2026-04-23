@@ -14,7 +14,6 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
 
-    // constructor injection for repository
     public RoomServiceImpl(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
@@ -23,18 +22,15 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void createRoom(RoomDto roomDto) {
 
-        // create new entity object
         Room room = new Room();
 
-        // map values from dto to entity
         room.setRoomType(roomDto.getRoomType());
         room.setPrice(roomDto.getPrice());
         room.setDescription(roomDto.getDescription());
 
-        // set default availability to true if not provided
+        // default availability true if not set
         room.setAvailable(roomDto.isAvailable());
 
-        // save to database
         roomRepository.save(room);
     }
 
@@ -42,22 +38,17 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void updateRoom(Long roomId, RoomDto roomDto) {
 
-        // find room using optional
-        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        Optional<Room> roomOptional = roomRepository.findById(roomId);
 
-        // check if room exists
-        if (optionalRoom.isPresent()) {
+        if (roomOptional.isPresent()) {
 
-            // get actual room object
-            Room room = optionalRoom.get();
+            Room room = roomOptional.get();
 
-            // update fields
             room.setRoomType(roomDto.getRoomType());
             room.setPrice(roomDto.getPrice());
             room.setDescription(roomDto.getDescription());
             room.setAvailable(roomDto.isAvailable());
 
-            // save updated room
             roomRepository.save(room);
         }
     }
@@ -65,62 +56,46 @@ public class RoomServiceImpl implements RoomService {
     // delete room
     @Override
     public void deleteRoom(Long roomId) {
-
-        // delete directly by id
         roomRepository.deleteById(roomId);
     }
 
     // get all rooms
     @Override
     public List<Room> getAllRooms() {
-
-        // return all rooms
         return roomRepository.findAll();
     }
 
-    // get only available rooms
+    // get available rooms
     @Override
     public List<Room> getAvailableRooms() {
-
-        // custom query method in repository
         return roomRepository.findAvailableRooms();
     }
 
-    // get single room
+    // get one room
     @Override
     public Room getRoomById(Long roomId) {
 
-        // use optional to avoid null pointer
-        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        Optional<Room> roomOptional = roomRepository.findById(roomId);
 
-        // return room if found
-        if (optionalRoom.isPresent()) {
-            return optionalRoom.get();
+        if (roomOptional.isPresent()) {
+            return roomOptional.get();
         }
 
-        // return null if not found (simple beginner approach)
         return null;
     }
 
-    // booking logic
+    // book room
     @Override
     public void bookRoom(Long roomId) {
 
-        // find room safely
-        Optional<Room> optionalRoom = roomRepository.findById(roomId);
+        Optional<Room> roomOptional = roomRepository.findById(roomId);
 
-        // check if room exists
-        if (optionalRoom.isPresent()) {
+        if (roomOptional.isPresent()) {
 
-            Room room = optionalRoom.get();
+            Room room = roomOptional.get();
 
-            // only book if available
             if (room.isAvailable()) {
-
-                // mark as unavailable after booking
                 room.setAvailable(false);
-
-                // save updated room
                 roomRepository.save(room);
             }
         }

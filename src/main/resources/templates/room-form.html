@@ -1,65 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <title>create room</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 </head>
 
-<body class="bg-light">
+<body>
 
 <div class="container mt-5">
 
-    <div class="row justify-content-center">
-        <div class="col-md-6">
+    <div class="card p-4">
 
-            <div class="card shadow p-4">
+        <h3>create room</h3>
 
-                <h3 class="mb-3 text-center">create room</h3>
+        <form th:action="@{/rooms/new}" th:object="${room}" method="post">
 
-                <form th:action="@{/rooms/new}" th:object="${room}" method="post">
+            <select th:field="*{roomType}" class="form-select mb-2">
+                <option value="">select type</option>
+                <option value="SINGLE">single</option>
+                <option value="STUDIO">studio</option>
+                <option value="QUEEN">queen</option>
+            </select>
 
-                    <!-- room type -->
-                    <div class="mb-3">
-                        <label>room type</label>
-                        <select th:field="*{roomType}" class="form-control mb-3"  required>
-                            <option value="SINGLE">Single</option>
-                            <option value="STUDIO">Studio</option>
-                            <option value="QUEEN">Queen</option>
-                        </select>
-                    </div>
+            <input th:field="*{price}" class="form-control mb-2" placeholder="price">
 
-                    <!-- price -->
-                    <div class="mb-3">
-                        <label>price</label>
-                        <input type="number" th:field="*{price}" class="form-control">
-                    </div>
+            <input th:field="*{description}" class="form-control mb-2" placeholder="description">
 
-                    <!-- description -->
-                    <div class="mb-3">
-                        <label>description</label>
-                        <input type="text" th:field="*{description}" class="form-control">
-                    </div>
+            <button class="btn btn-success w-100">save</button>
 
-                    <!-- availability -->
-                    <div class="form-check mb-3">
-                        <input type="checkbox" th:field="*{available}" class="form-check-input">
-                        <label class="form-check-label">available</label>
-                    </div>
+        </form>
 
-                    <button class="btn btn-outline-success w-100">save room</button>
-
-                </form>
-
-                <a href="/dashboard" class="btn btn-outline-secondary mt-3 w-100">
-                    back
-                </a>
-
-            </div>
-
-        </div>
     </div>
 
 </div>
