@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>create room</title>
+    <title>Create Room</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -12,22 +12,23 @@
 
     <div class="card p-4">
 
-        <h3>create room</h3>
+        <h3>CREATE ROOM</h3>
 
         <form th:action="@{/rooms/new}" th:object="${room}" method="post">
 
             <select th:field="*{roomType}" class="form-select mb-2">
-                <option value="">select type</option>
-                <option value="SINGLE">single</option>
-                <option value="STUDIO">studio</option>
-                <option value="QUEEN">queen</option>
+                <option value="">Select Type</option>
+                <option value="SINGLE">Single</option>
+                <option value="STUDIO">Studio</option>
+                <option value="QUEEN">Queen</option>
+                <option value="KING">King</option>
             </select>
 
             <input th:field="*{price}" class="form-control mb-2" placeholder="price">
 
             <input th:field="*{description}" class="form-control mb-2" placeholder="description">
 
-            <button class="btn btn-success w-100">save</button>
+            <button class="btn btn-success w-100">SAVE</button>
 
         </form>
 

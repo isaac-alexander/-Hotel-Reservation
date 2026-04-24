@@ -3,34 +3,29 @@
 <body>
 
 <nav class="navbar navbar-dark bg-dark">
-
     <div class="container">
 
-        <!-- brand -->
         <a class="navbar-brand" href="/dashboard">
-            G P H
+            HOUSE OF ACE HOTEL
         </a>
 
         <ul class="navbar-nav ms-auto d-flex flex-row gap-3">
 
-            <!-- admin only -->
             <li th:if="${user.role == 'admin'}">
                 <a class="nav-link text-white" href="/rooms/new">
-                    manage rooms
+                    MANAGE ROOMS
                 </a>
             </li>
 
-            <!-- logout -->
             <li>
                 <a class="nav-link text-danger" href="/logout">
-                    logout
+                    LOGOUT
                 </a>
             </li>
 
         </ul>
 
     </div>
-
 </nav>
 
 </body>

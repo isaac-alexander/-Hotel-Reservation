@@ -122,7 +122,7 @@ public class RoomController {
         model.addAttribute("room", roomDto);
         model.addAttribute("roomId", id);
 
-        return "room-edit";
+        return "edit-room";
     }
 
     // update room
