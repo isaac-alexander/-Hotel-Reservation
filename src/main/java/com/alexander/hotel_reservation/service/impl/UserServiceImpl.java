@@ -20,7 +20,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(User user) {
 
-        // set default role as customer
+        // check if email already exists
+        Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+
+        if (existingUser.isPresent()) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // set default role
         user.setRole("customer");
 
         userRepository.save(user);

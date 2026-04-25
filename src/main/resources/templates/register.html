@@ -27,26 +27,34 @@
                     <span th:text="${success}"></span>
                 </div>
 
+                <div th:if="${error}" class="alert alert-danger text-center">
+                    <span th:text="${error}"></span>
+                </div>
+
                 <!-- form -->
                 <form th:action="@{/register}" th:object="${user}" method="post">
 
                     <!-- name -->
                     <div class="mb-3">
-                        <label>name</label>
-                        <input type="text" th:field="*{name}" class="form-control" placeholder="enter name" required>
+                        <label>Full Name</label>
+                        <input type="text" th:field="*{name}" class="form-control">
+                        <div class="text-danger" th:if="${#fields.hasErrors('name')}"
+                             th:errors="*{name}"></div>
                     </div>
 
                     <!-- email -->
                     <div class="mb-3">
-                        <label>email</label>
-                        <input type="email" th:field="*{email}" class="form-control" placeholder="enter email" required>
-                    </div>
+                        <label>Email</label>
+                        <input type="email" th:field="*{email}" class="form-control">
+                        <div class="text-danger" th:if="${#fields.hasErrors('email')}"
+                             th:errors="*{email}"></div>                    </div>
 
                     <!-- password -->
                     <div class="mb-3">
-                        <label>password</label>
-                        <input type="password" th:field="*{password}" class="form-control" placeholder="enter password" required>
-                    </div>
+                        <label>Password</label>
+                        <input type="password" th:field="*{password}" class="form-control">
+                        <div class="text-danger" th:if="${#fields.hasErrors('password')}"
+                             th:errors="*{password}"></div>                    </div>
 
                     <!-- button -->
                     <button class="btn btn-primary w-100">REGISTER</button>

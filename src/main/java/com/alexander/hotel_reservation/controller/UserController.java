@@ -6,7 +6,8 @@ import com.alexander.hotel_reservation.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 
 @Controller
 public class UserController {
@@ -28,20 +29,28 @@ public class UserController {
 
     // handle register
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") CreateUserDto dto,
-                           RedirectAttributes redirectAttributes) {
+    public String register(@Valid @ModelAttribute("user") CreateUserDto dto,
+                           BindingResult result,
+                           Model model) {
 
-        // convert dto -  entity
+        // handle validation errors
+        if (result.hasErrors()) {
+            return "register";
+        }
+
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPassword(dto.getPassword());
         user.setRole("customer");
 
-        userService.register(user);
-
-        redirectAttributes.addFlashAttribute("success", "registration successful");
-
-        return "redirect:/login";
+        try {
+            userService.register(user);
+            model.addAttribute("success", "Registration Successful");
+            return "register";
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+            return "register";
+        }
     }
 }

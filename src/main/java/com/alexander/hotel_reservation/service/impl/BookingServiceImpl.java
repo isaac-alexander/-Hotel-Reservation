@@ -40,7 +40,9 @@ public class BookingServiceImpl implements BookingService {
         // create booking
         Booking newBooking = new Booking();
 
-        newBooking.setUserId(user.getId());
+        // set full user object
+        newBooking.setUser(user);
+
         newBooking.setRoomId(bookingDto.getRoomId());
         newBooking.setCheckIn(bookingDto.getCheckIn());
         newBooking.setCheckOut(bookingDto.getCheckOut());

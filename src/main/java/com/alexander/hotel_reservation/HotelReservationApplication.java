@@ -25,7 +25,7 @@ public class HotelReservationApplication {
                 userRepository.insertUser(
                         "Admin",
                         "admin@gmail.com",
-                        "1234",
+                        "12345",
                         "admin"
                 );
 

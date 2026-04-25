@@ -39,15 +39,15 @@
                 <th>ROOM ID</th>
                 <th>CHECK IN</th>
                 <th>CHECK OUT</th>
-                <th th:if="${user.role == 'admin'}">USER ID</th>
-            </tr>
+                <th th:if="${user.role == 'admin'}">CUSTOMER NAME</th>            </tr>
             </thead>
 
             <tbody>
 
             <tr th:each="b : ${bookings}">
 
-                <td th:text="${b.roomId}"></td>
+                <td th:if="${user.role == 'admin'}"
+                    th:text="${b.user.name}"></td>
                 <td th:text="${b.checkIn}"></td>
                 <td th:text="${b.checkOut}"></td>
 
