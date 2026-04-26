@@ -11,20 +11,23 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // who booked
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
-    // store room id
     private Long roomId;
 
-    // check-in date
     private LocalDate checkIn;
-
-    // check-out date
     private LocalDate checkOut;
 
+    private String status;
+    // PENDING, CONFIRMED, CANCELLED, CHECKED_IN, CHECKED_OUT
+
+    private String checkInTime;
+    private String checkOutTime;
+
     public Booking() {
+
     }
 
     public Long getId() {
@@ -35,31 +38,55 @@ public class Booking {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Long getRoomId() {
         return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
     }
 
     public LocalDate getCheckIn() {
         return checkIn;
     }
 
-    public void setCheckIn(LocalDate checkIn) {
-        this.checkIn = checkIn;
-    }
-
     public LocalDate getCheckOut() {
         return checkOut;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public String getCheckInTime() {
+        return checkInTime;
+    }
+
+    public String getCheckOutTime() {
+        return checkOutTime;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
+    public void setCheckIn(LocalDate checkIn) {
+        this.checkIn = checkIn;
+    }
+
     public void setCheckOut(LocalDate checkOut) {
         this.checkOut = checkOut;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setCheckInTime(String checkInTime) {
+        this.checkInTime = checkInTime;
+    }
+
+    public void setCheckOutTime(String checkOutTime) {
+        this.checkOutTime = checkOutTime;
     }
 }

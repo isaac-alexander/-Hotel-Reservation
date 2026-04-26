@@ -21,7 +21,7 @@ public class HotelReservationApplication {
             // check if admin already exists
             if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
 
-                // insert admin user
+                // insert admin using query
                 userRepository.insertUser(
                         "Admin",
                         "admin@gmail.com",

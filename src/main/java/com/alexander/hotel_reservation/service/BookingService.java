@@ -14,6 +14,15 @@ public interface BookingService {
     // get bookings for logged in user
     List<Booking> getBookingsByUser(Long userId);
 
-    // get all bookings admin only
+    // get all bookings admin/receptionist
     List<Booking> getAllBookings();
+
+    // confirm booking receptionist/admin
+    void updateStatus(Long bookingId, String status);
+
+    // check in guest receptionist
+    void checkIn(Long bookingId);
+
+    // check out guest receptionist
+    void checkOut(Long bookingId);
 }

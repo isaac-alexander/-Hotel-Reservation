@@ -17,7 +17,7 @@ public class User {
 
     private String password;
 
-    private String role; // ADMIN or CUSTOMER
+    private String role; // ADMIN, RECEPTIONIST, CUSTOMER
 
 
     public User() {

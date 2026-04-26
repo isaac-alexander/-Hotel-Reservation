@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/rooms")
@@ -17,7 +18,6 @@ public class RoomController {
 
     private final RoomService roomService;
 
-    // inject service
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
     }
@@ -26,23 +26,24 @@ public class RoomController {
     @GetMapping
     public String allRooms(Model model, HttpSession session) {
 
-        // get user from session
-        Object userObject = session.getAttribute("loggedInUser");
+        // get logged in user safely using Optional
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        // redirect if not logged in
-        if (userObject == null) {
+        // if user not logged in redirect to login page
+        if (userOptional.isEmpty()) {
             return "redirect:/login";
         }
 
-        // cast to user
-        User loggedInUser = (User) userObject;
+        // get actual user
+        User user = userOptional.get();
 
-        // fetch rooms
+        // get all rooms from database
         List<Room> rooms = roomService.getAllRooms();
 
         // send data to frontend
         model.addAttribute("rooms", rooms);
-        model.addAttribute("user", loggedInUser);
+        model.addAttribute("user", user);
 
         return "rooms";
     }
@@ -51,19 +52,19 @@ public class RoomController {
     @GetMapping("/{id}")
     public String singleRoom(@PathVariable Long id, Model model, HttpSession session) {
 
-        Object userObject = session.getAttribute("loggedInUser");
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        if (userObject == null) {
+        if (userOptional.isEmpty()) {
             return "redirect:/login";
         }
 
-        User loggedInUser = (User) userObject;
+        User user = userOptional.get();
 
-        // get room by id
         Room room = roomService.getRoomById(id);
 
         model.addAttribute("room", room);
-        model.addAttribute("user", loggedInUser);
+        model.addAttribute("user", user);
 
         return "room-details";
     }
@@ -72,10 +73,17 @@ public class RoomController {
     @GetMapping("/new")
     public String createRoomPage(Model model, HttpSession session) {
 
-        User user = (User) session.getAttribute("loggedInUser");
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        // block non-admin users
-        if (user == null || !user.getRole().equals("admin")) {
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        // only admin allowed
+        if (!user.getRole().equals("admin")) {
             return "redirect:/rooms";
         }
 
@@ -88,13 +96,19 @@ public class RoomController {
     @PostMapping("/new")
     public String saveRoom(@ModelAttribute RoomDto roomDto, HttpSession session) {
 
-        User user = (User) session.getAttribute("loggedInUser");
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        if (user == null || !user.getRole().equals("admin")) {
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("admin")) {
             return "redirect:/rooms";
         }
 
-        // call service
         roomService.createRoom(roomDto);
 
         return "redirect:/rooms";
@@ -104,22 +118,28 @@ public class RoomController {
     @GetMapping("/edit/{id}")
     public String editRoom(@PathVariable Long id, Model model, HttpSession session) {
 
-        User user = (User) session.getAttribute("loggedInUser");
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        if (user == null || !user.getRole().equals("admin")) {
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("admin")) {
             return "redirect:/rooms";
         }
 
         Room room = roomService.getRoomById(id);
 
-        // convert entity to dto
-        RoomDto roomDto = new RoomDto();
-        roomDto.setRoomType(room.getRoomType());
-        roomDto.setPrice(room.getPrice());
-        roomDto.setDescription(room.getDescription());
-        roomDto.setAvailable(room.isAvailable());
+        RoomDto dto = new RoomDto();
+        dto.setRoomType(room.getRoomType());
+        dto.setPrice(room.getPrice());
+        dto.setDescription(room.getDescription());
+        dto.setAvailable(room.isAvailable());
 
-        model.addAttribute("room", roomDto);
+        model.addAttribute("room", dto);
         model.addAttribute("roomId", id);
 
         return "edit-room";
@@ -131,9 +151,16 @@ public class RoomController {
                              @ModelAttribute RoomDto roomDto,
                              HttpSession session) {
 
-        User user = (User) session.getAttribute("loggedInUser");
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        if (user == null || !user.getRole().equals("admin")) {
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("admin")) {
             return "redirect:/rooms";
         }
 
@@ -146,29 +173,20 @@ public class RoomController {
     @GetMapping("/delete/{id}")
     public String deleteRoom(@PathVariable Long id, HttpSession session) {
 
-        User user = (User) session.getAttribute("loggedInUser");
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        if (user == null || !user.getRole().equals("admin")) {
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("admin")) {
             return "redirect:/rooms";
         }
 
         roomService.deleteRoom(id);
-
-        return "redirect:/rooms";
-    }
-
-    // book room (customer only)
-    @GetMapping("/book/{id}")
-    public String bookRoom(@PathVariable Long id, HttpSession session) {
-
-        User user = (User) session.getAttribute("loggedInUser");
-
-        // block admin from booking
-        if (user == null || !user.getRole().equals("customer")) {
-            return "redirect:/rooms";
-        }
-
-        roomService.bookRoom(id);
 
         return "redirect:/rooms";
     }

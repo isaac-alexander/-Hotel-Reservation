@@ -22,17 +22,14 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    // show booking form
+    // SHOW BOOKING FORM
     @GetMapping("/new/{roomId}")
-    public String bookingForm(@PathVariable Long roomId,
-                              Model model,
-                              HttpSession session) {
+    public String bookingForm(@PathVariable Long roomId, Model model, HttpSession session) {
 
-        // get user
         Optional<User> userOptional =
                 Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
-        // redirect if not logged in
+        // if user not logged in
         if (userOptional.isEmpty()) {
             return "redirect:/login";
         }
@@ -41,13 +38,12 @@ public class BookingController {
         dto.setRoomId(roomId);
 
         model.addAttribute("booking", dto);
-
         return "booking-form";
     }
 
-    // create booking
+    // CREATE BOOKING
     @PostMapping("/new")
-    public String createBooking(@ModelAttribute("booking") BookingDto dto,
+    public String createBooking(@ModelAttribute BookingDto dto,
                                 HttpSession session,
                                 Model model) {
 
@@ -63,14 +59,15 @@ public class BookingController {
         boolean success = bookingService.createBooking(dto, user);
 
         if (!success) {
-            model.addAttribute("error", "room not available for selected dates");
+            model.addAttribute("error", "Room not available for selected dates");
             return "booking-form";
         }
 
-        model.addAttribute("success", "booking successful");
-        return "booking-form";    }
+        model.addAttribute("success", "Booking successful (PENDING approval)");
+        return "booking-form";
+    }
 
-    // booking history page
+    // BOOKING HISTORY (ROLE BASED)
     @GetMapping("/history")
     public String bookingHistory(Model model, HttpSession session) {
 
@@ -85,11 +82,10 @@ public class BookingController {
 
         List<Booking> bookings;
 
-        // admin sees all bookings
-        if (user.getRole().equals("admin")) {
+        // ADMIN + RECEPTIONIST see ALL bookings
+        if (user.getRole().equals("admin") || user.getRole().equals("receptionist")) {
             bookings = bookingService.getAllBookings();
         } else {
-            // customer sees only their bookings
             bookings = bookingService.getBookingsByUser(user.getId());
         }
 
@@ -99,4 +95,69 @@ public class BookingController {
         return "booking-history";
     }
 
+    // RECEPTIONIST confirm booking
+    @GetMapping("/confirm/{id}")
+    public String confirmBooking(@PathVariable Long id, HttpSession session) {
+
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
+
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("receptionist") && !user.getRole().equals("admin")) {
+            return "redirect:/dashboard";
+        }
+
+        bookingService.updateStatus(id, "CONFIRMED");
+
+        return "redirect:/bookings/history";
+    }
+
+    // CHECK IN
+    @GetMapping("/checkin/{id}")
+    public String checkIn(@PathVariable Long id, HttpSession session) {
+
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
+
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("receptionist")) {
+            return "redirect:/dashboard";
+        }
+
+        bookingService.checkIn(id);
+
+        return "redirect:/bookings/history";
+    }
+
+    // CHECK OUT
+    @GetMapping("/checkout/{id}")
+    public String checkOut(@PathVariable Long id, HttpSession session) {
+
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
+
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        User user = userOptional.get();
+
+        if (!user.getRole().equals("receptionist")) {
+            return "redirect:/dashboard";
+        }
+
+        bookingService.checkOut(id);
+
+        return "redirect:/bookings/history";
+    }
 }
