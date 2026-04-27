@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="sidebar">
+
+    <div class="sidebar">
+
+        <h5>HOUSE OF ACE HOTEL</h5>
+
+        <a href="/dashboard">HOME</a>
+        <a href="/rooms">ROOMS</a>
+        <a href="/bookings/history">BOOKINGS</a>
+
+        <div th:if="${user != null}">
+
+git             <a th:if="${user.role == 'admin'}"
+               href="/rooms/new">
+                ADD ROOM
+            </a>
+
+            <a th:if="${user.role == 'admin' or user.role == 'receptionist'}"
+               href="/users/create">
+
+                <span th:if="${user.role == 'admin'}">CREATE USER</span>
+                <span th:if="${user.role == 'receptionist'}">CREATE CUSTOMER</span>
+
+            </a>
+
+        </div>
+
+        <hr>
+
+        <a href="/logout" class="text-danger">LOGOUT</a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

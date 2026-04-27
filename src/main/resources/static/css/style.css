@@ -1,17 +1,33 @@
-/* base layout */
 body {
     background-color: #f4f7fb;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
 }
 
-/* sidebar */
+/* NAVBAR FIX */
+.navbar {
+    margin: 0;
+    padding: 10px 20px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* SIDEBAR */
 .sidebar {
+    margin-top: 50px;
     width: 220px;
     height: 100vh;
     position: fixed;
-    background: #0d3b66; /* deep blue */
+    top: 0;
+    left: 0;
+    background: #0d3b66;
     color: white;
     padding: 20px;
+    overflow-y: auto;
 }
 
 .sidebar a {
@@ -19,44 +35,59 @@ body {
     display: block;
     margin-bottom: 12px;
     text-decoration: none;
+    padding: 8px;
+    border-radius: 6px;
 }
 
 .sidebar a:hover {
-    color: #ffd166; /* gold */
+    background: rgba(255, 209, 102, 0.15);
+    color: #ffd166;
 }
 
-/* main content */
+/* MAIN CONTENT */
 .main-content {
-    margin-left: 240px;
-    padding: 20px;
+    margin-left: 220px;
+    padding: 80px 20px 20px;
 }
 
-/* cards */
+/* CARDS */
 .card {
     border-radius: 12px;
     border: none;
 }
 
-/* buttons */
+/* BUTTONS */
 .btn {
     border-radius: 8px;
 }
 
-/* alert animation */
-.alert {
-    transition: opacity 0.5s ease;
+/* TABLE */
+table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-/* carousel */
-.carousel-item {
-    height: 250px;
-    background-size: cover;
-    background-position: center;
-    color: white;
+/* INPUTS */
+input, select {
+    border-radius: 8px !important;
 }
 
-.carousel-overlay {
-    background: rgba(0,0,0,0.5);
-    height: 100%;
-    padding: 40px;
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 20px;
+    }
+
+    .navbar {
+        position: relative;
+    }
 }

@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // set default role
-        user.setRole("customer");
+        // user.setRole("customer");
 
         userRepository.save(user);
     }

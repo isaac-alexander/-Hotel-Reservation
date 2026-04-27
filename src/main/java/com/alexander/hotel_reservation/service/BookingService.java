@@ -25,4 +25,6 @@ public interface BookingService {
 
     // check out guest receptionist
     void checkOut(Long bookingId);
+
+    Booking getBookingById(Long id);
 }

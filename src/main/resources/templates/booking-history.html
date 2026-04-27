@@ -9,58 +9,27 @@
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h4>HOUSE OF ACE HOTEL</h4>
+<div th:replace="fragments/sidebar :: sidebar"></div>
 
-    <a href="/dashboard">HOME</a>
-    <a href="/rooms">ROOMS</a>
-    <a href="/bookings/history">BOOKING HISTORY</a>
-
-    <!-- only admin sees manage rooms -->
-    <a th:if="${user.role == 'admin'}" href="/rooms/new">MANAGE ROOMS</a>
-
-    <hr>
-    <a href="/logout" class="text-danger">LOGOUT</a>
-</div>
-
-<!-- MAIN CONTENT -->
 <div class="main-content">
 
-    <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3>BOOKING HISTORY</h3>
+    <div th:replace="fragments/navbar :: navbar"></div>
 
-        <span>
-            Welcome
-            <b th:text="${#strings.toUpperCase(user.name)}"></b>
-        </span>
-    </div>
+    <h4>BOOKING HISTORY</h4>
 
-    <!-- TABLE CARD -->
-    <div class="card shadow p-4">
+    <div class="card p-3 shadow-sm table-responsive">
 
-        <table class="table table-hover align-middle">
+        <table class="table table-hover">
 
             <thead class="table-dark">
             <tr>
-                <th>ROOM ID</th>
-                <th>CHECK IN</th>
-                <th>CHECK OUT</th>
-                <th>STATUS</th>
+                <th>Room</th>
+                <th>Check In</th>
+                <th>Check Out</th>
+                <th>Status</th>
 
-                <!-- only admin/receptionist sees customer name -->
-                <th th:if="${user.role == 'admin' or user.role == 'receptionist'}">
-                    CUSTOMER NAME
-                </th>
-
-                <th>CHECK-IN TIME</th>
-                <th>CHECK-OUT TIME</th>
-
-                <!-- receptionist actions -->
-                <th th:if="${user.role == 'admin' or user.role == 'receptionist'}">
-                    ACTIONS
-                </th>
+                <th th:if="${user != null and user.role != 'customer'}">Customer</th>
+                <th>Actions</th>
             </tr>
             </thead>
 
@@ -68,45 +37,61 @@
 
             <tr th:each="b : ${bookings}">
 
-                <!-- room id -->
                 <td th:text="${b.roomId}"></td>
-
-                <!-- dates -->
                 <td th:text="${b.checkIn}"></td>
                 <td th:text="${b.checkOut}"></td>
-
-                <!-- booking status -->
                 <td th:text="${b.status}"></td>
 
-                <!-- customer name (admin/receptionist only) -->
-                <td th:if="${user.role == 'admin' or user.role == 'receptionist'}"
+                <td th:if="${user != null and user.role != 'customer'}"
                     th:text="${b.user.name}">
                 </td>
 
-                <!-- check-in time -->
-                <td th:text="${b.checkInTime}"></td>
+                <td>
 
-                <!-- check-out time -->
-                <td th:text="${b.checkOutTime}"></td>
+                    <!-- UPDATE - ONLY SHOW FOR PENDING -->
 
-                <!-- actions (receptionist/admin only) -->
-                <td th:if="${user.role == 'admin' or user.role == 'receptionist'}">
-
-                    <!-- confirm booking -->
-                    <a th:href="@{'/bookings/confirm/' + ${b.id}}"
-                       class="btn btn-sm btn-success mb-1">
+                    <!-- CONFIRM -->
+                    <a th:if="${user != null
+                               and user.role != 'customer'
+                               and b.status == 'PENDING'}"
+                       th:href="@{'/bookings/confirm/' + ${b.id}}"
+                       class="btn btn-success btn-sm">
                         Confirm
                     </a>
 
-                    <!-- check in -->
-                    <a th:href="@{'/bookings/checkin/' + ${b.id}}"
-                       class="btn btn-sm btn-primary mb-1">
+                    <!-- REJECT -->
+                    <a th:if="${user != null
+                               and user.role != 'customer'
+                               and b.status == 'PENDING'}"
+                       th:href="@{'/bookings/reject/' + ${b.id}}"
+                       class="btn btn-danger btn-sm">
+                        Reject
+                    </a>
+
+                    <!-- NEW: CUSTOMER CANCEL -->
+                    <a th:if="${user != null
+                               and user.role == 'customer'
+                               and b.status == 'PENDING'}"
+                       th:href="@{'/bookings/cancel/' + ${b.id}}"
+                       class="btn btn-warning btn-sm">
+                        Cancel
+                    </a>
+
+                    <!-- CHECK-IN ONLY AFTER CONFIRMED -->
+                    <a th:if="${user != null
+                               and user.role == 'receptionist'
+                               and b.status == 'CONFIRMED'}"
+                       th:href="@{'/bookings/checkin/' + ${b.id}}"
+                       class="btn btn-primary btn-sm">
                         Check In
                     </a>
 
-                    <!-- check out -->
-                    <a th:href="@{'/bookings/checkout/' + ${b.id}}"
-                       class="btn btn-sm btn-warning">
+                    <!-- CHECK-OUT ONLY AFTER CHECKED IN -->
+                    <a th:if="${user != null
+                               and user.role == 'receptionist'
+                               and b.status == 'CHECKED_IN'}"
+                       th:href="@{'/bookings/checkout/' + ${b.id}}"
+                       class="btn btn-warning btn-sm">
                         Check Out
                     </a>
 
@@ -115,20 +100,11 @@
             </tr>
 
             </tbody>
+
         </table>
 
-        <!-- EMPTY STATE -->
-        <div th:if="${#lists.isEmpty(bookings)}"
-             class="text-center text-muted mt-3">
-            NO BOOKINGS FOUND
-        </div>
-
-        <!-- BACK BUTTON -->
-        <a href="/dashboard" class="btn btn-dark mt-3">
-            BACK TO DASHBOARD
-        </a>
-
     </div>
+
 </div>
 
 </body>

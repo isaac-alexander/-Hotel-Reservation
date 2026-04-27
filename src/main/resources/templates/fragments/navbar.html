@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <body>
 
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container">
+<div th:fragment="navbar">
+
+    <nav class="navbar navbar-dark bg-dark px-3">
 
         <a class="navbar-brand" href="/dashboard">
             HOUSE OF ACE HOTEL
         </a>
 
-        <ul class="navbar-nav ms-auto d-flex flex-row gap-3">
+        <div class="d-flex gap-3">
 
-            <li th:if="${user.role == 'admin'}">
-                <a class="nav-link text-white" href="/rooms/new">
-                    MANAGE ROOMS
-                </a>
-            </li>
+            <a th:if="${user != null and user.role == 'admin'}"
+               class="nav-link text-info"
+               href="/users/create">
+                CREATE USER
+            </a>
 
-            <li>
-                <a class="nav-link text-danger" href="/logout">
-                    LOGOUT
-                </a>
-            </li>
+            <a th:if="${user != null and user.role == 'receptionist'}"
+               class="nav-link text-success"
+               href="/users/create">
+                CREATE CUSTOMER
+            </a>
 
-        </ul>
+            <a class="nav-link text-white" href="/rooms">ROOMS</a>
+            <a class="nav-link text-white" href="/bookings/history">BOOKINGS</a>
+            <a class="nav-link text-danger" href="/logout">LOGOUT</a>
 
-    </div>
-</nav>
+        </div>
+
+    </nav>
+
+</div>
 
 </body>
 </html>

@@ -141,6 +141,7 @@ public class RoomController {
 
         model.addAttribute("room", dto);
         model.addAttribute("roomId", id);
+        model.addAttribute("user", user);
 
         return "edit-room";
     }

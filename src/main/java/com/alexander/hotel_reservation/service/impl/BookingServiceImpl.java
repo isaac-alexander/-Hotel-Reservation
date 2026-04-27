@@ -20,52 +20,65 @@ public class BookingServiceImpl implements BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    // create booking
+    // CREATE BOOKING
     @Override
     public boolean createBooking(BookingDto bookingDto, User user) {
 
+        // get all bookings for this room
         List<Booking> existingBookings =
                 bookingRepository.findByRoomId(bookingDto.getRoomId());
 
+        // loop through existing bookings
         for (Booking existing : existingBookings) {
 
-            boolean isConflict =
-                    !(bookingDto.getCheckOut().isBefore(existing.getCheckIn()) ||
-                            bookingDto.getCheckIn().isAfter(existing.getCheckOut()));
+            String status = existing.getStatus();
 
-            if (isConflict) {
+            // ignore cancelled or rejected bookings
+            if (status.equals("CANCELLED") || status.equals("REJECTED")) {
+                continue;
+            }
+
+            //  overlap
+            boolean overlap =
+                    bookingDto.getCheckIn().isBefore(existing.getCheckOut()) &&
+                            bookingDto.getCheckOut().isAfter(existing.getCheckIn());
+
+            // if overlap exists - booking not allowed
+            if (overlap) {
                 return false;
             }
         }
 
+        // create new booking object
         Booking newBooking = new Booking();
 
-        newBooking.setUser(user);
-        newBooking.setRoomId(bookingDto.getRoomId());
-        newBooking.setCheckIn(bookingDto.getCheckIn());
-        newBooking.setCheckOut(bookingDto.getCheckOut());
+        newBooking.setUser(user); // set user
+        newBooking.setRoomId(bookingDto.getRoomId()); // set room
+        newBooking.setCheckIn(bookingDto.getCheckIn()); // set check-in date
+        newBooking.setCheckOut(bookingDto.getCheckOut()); // set check-out date
 
         // default status
         newBooking.setStatus("PENDING");
 
+        // save booking
         bookingRepository.save(newBooking);
 
-        return true;
+        return true; // success
     }
 
-    // get bookings for a user
+    // GET BOOKINGS FOR USER
     @Override
     public List<Booking> getBookingsByUser(Long userId) {
         return bookingRepository.findByUser_Id(userId);
     }
 
-    // admin gets all bookings
+    // GET ALL BOOKINGS ADMIN / RECEPTIONIST
     @Override
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
 
-    // confirm / update status
+    // UPDATE STATUS - CONFIRM / REJECT / CANCEL
     @Override
     public void updateStatus(Long bookingId, String status) {
 
@@ -75,13 +88,13 @@ public class BookingServiceImpl implements BookingService {
 
             Booking booking = bookingOptional.get();
 
-            booking.setStatus(status);
+            booking.setStatus(status); // update status
 
-            bookingRepository.save(booking);
+            bookingRepository.save(booking); // save changes
         }
     }
 
-    // check-in
+    // CHECK-IN
     @Override
     public void checkIn(Long bookingId) {
 
@@ -91,9 +104,9 @@ public class BookingServiceImpl implements BookingService {
 
             Booking booking = bookingOptional.get();
 
-            booking.setStatus("CHECKED_IN");
+            booking.setStatus("CHECKED_IN"); // update status
 
-            // store time
+            // store current time
             booking.setCheckInTime(LocalDateTime.now().toString());
 
             bookingRepository.save(booking);
@@ -110,12 +123,21 @@ public class BookingServiceImpl implements BookingService {
 
             Booking booking = bookingOptional.get();
 
-            booking.setStatus("CHECKED_OUT");
+            booking.setStatus("CHECKED_OUT"); // update status
 
-            // store time
+            // store current time
             booking.setCheckOutTime(LocalDateTime.now().toString());
 
             bookingRepository.save(booking);
         }
+    }
+
+    // get single booking
+    @Override
+    public Booking getBookingById(Long id) {
+
+        Optional<Booking> bookingOptional = bookingRepository.findById(id);
+
+        return bookingOptional.orElse(null); // return booking or null
     }
 }

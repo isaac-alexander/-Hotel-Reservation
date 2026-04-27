@@ -1,4 +1,5 @@
 package com.alexander.hotel_reservation.dto;
+
 import jakarta.validation.constraints.*;
 
 public class CreateUserDto {
@@ -15,6 +16,11 @@ public class CreateUserDto {
     @Size(min = 5, message = "Password must be at least 5 characters")
     private String password;
 
+    private String role;
+
+    public CreateUserDto() {
+
+    }
 
     public String getName() {
         return name;
@@ -38,5 +44,13 @@ public class CreateUserDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

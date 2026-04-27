@@ -3,13 +3,17 @@ package com.alexander.hotel_reservation.controller;
 import com.alexander.hotel_reservation.dto.CreateUserDto;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.service.UserService;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -18,39 +22,78 @@ public class UserController {
         this.userService = userService;
     }
 
-    // show register page
-    @GetMapping("/register")
-    public String showRegister(Model model) {
+    // show create user page for admin + receptionist
+    @GetMapping("/create")
+    public String showCreateUser(Model model, HttpSession session) {
+
+        // get logged in user safely
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
+
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
 
         model.addAttribute("user", new CreateUserDto());
 
-        return "register";
+        return "create-user";
     }
 
-    // handle register
-    @PostMapping("/register")
-    public String register(@Valid @ModelAttribute("user") CreateUserDto dto,
-                           BindingResult result,
-                           Model model) {
+    //create user
+    @PostMapping("/create")
+    public String createUser(@Valid @ModelAttribute("user") CreateUserDto dto,
+                             BindingResult result,
+                             HttpSession session,
+                             Model model) {
 
-        // handle validation errors
+        Optional<User> userOptional =
+                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
+
+        if (userOptional.isEmpty()) {
+            return "redirect:/login";
+        }
+
         if (result.hasErrors()) {
-            return "register";
+            return "create-user";
         }
 
-        User user = new User();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
-        user.setRole("customer");
+        User currentUser = userOptional.get();
 
-        try {
-            userService.register(user);
-            model.addAttribute("success", "Registration Successful");
-            return "register";
-        } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
-            return "register";
+        // convert dto - entity
+        User newUser = new User();
+        newUser.setName(dto.getName());
+        newUser.setEmail(dto.getEmail());
+        newUser.setPassword(dto.getPassword());
+
+        // admin
+        if (currentUser.getRole().equals("admin")) {
+
+            // admin can create receptionist or customer
+            if (dto.getRole().equals("receptionist")) {
+                newUser.setRole("receptionist");
+            } else {
+                newUser.setRole("customer");
+            }
+
+            userService.register(newUser);
         }
+
+        // receptionist
+        else if (currentUser.getRole().equals("receptionist")) {
+
+            // receptionist always creates customer
+            newUser.setRole("customer");
+
+            userService.register(newUser);
+        }
+
+        // customers can't access
+        else {
+            return "redirect:/dashboard";
+        }
+
+        model.addAttribute("success", "User created successfully");
+
+        return "create-user";
     }
 }
