@@ -22,11 +22,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    // show create user page for admin + receptionist
+    // show create user page
     @GetMapping("/create")
     public String showCreateUser(Model model, HttpSession session) {
 
-        // get logged in user safely
         Optional<User> userOptional =
                 Optional.ofNullable((User) session.getAttribute("loggedInUser"));
 
@@ -39,7 +38,7 @@ public class UserController {
         return "create-user";
     }
 
-    //create user
+    // create user
     @PostMapping("/create")
     public String createUser(@Valid @ModelAttribute("user") CreateUserDto dto,
                              BindingResult result,
@@ -59,40 +58,44 @@ public class UserController {
 
         User currentUser = userOptional.get();
 
-        // convert dto - entity
         User newUser = new User();
         newUser.setName(dto.getName());
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(dto.getPassword());
 
-        // admin
-        if (currentUser.getRole().equals("admin")) {
+        try {
 
-            // admin can create receptionist or customer
-            if (dto.getRole().equals("receptionist")) {
-                newUser.setRole("receptionist");
-            } else {
-                newUser.setRole("customer");
+            // ADMIN
+            if (currentUser.getRole().equals("admin")) {
+
+                if ("receptionist".equals(dto.getRole())) {
+                    newUser.setRole("receptionist");
+                } else {
+                    newUser.setRole("customer");
+                }
+
+                userService.register(newUser);
             }
 
-            userService.register(newUser);
+            // RECEPTIONIST
+            else if (currentUser.getRole().equals("receptionist")) {
+
+                newUser.setRole("customer");
+
+                userService.register(newUser);
+            }
+
+            // CUSTOMER BLOCKED
+            else {
+                return "redirect:/dashboard";
+            }
+
+            model.addAttribute("success", "User created successfully");
+
+        } catch (RuntimeException e) {
+
+            model.addAttribute("error", e.getMessage());
         }
-
-        // receptionist
-        else if (currentUser.getRole().equals("receptionist")) {
-
-            // receptionist always creates customer
-            newUser.setRole("customer");
-
-            userService.register(newUser);
-        }
-
-        // customers can't access
-        else {
-            return "redirect:/dashboard";
-        }
-
-        model.addAttribute("success", "User created successfully");
 
         return "create-user";
     }

@@ -24,7 +24,12 @@ public class Booking {
     // PENDING, CONFIRMED, CANCELLED, CHECKED_IN, CHECKED_OUT
 
     private String checkInTime;
+
     private String checkOutTime;
+
+    private String bookingCode;
+
+    private double totalPrice;
 
     public Booking() {
 
@@ -89,4 +94,21 @@ public class Booking {
     public void setCheckOutTime(String checkOutTime) {
         this.checkOutTime = checkOutTime;
     }
+
+    public String getBookingCode() {
+        return bookingCode;
+    }
+
+    public void setBookingCode(String bookingCode) {
+        this.bookingCode = bookingCode;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
 }

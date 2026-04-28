@@ -3,8 +3,10 @@ package com.alexander.hotel_reservation.controller;
 import com.alexander.hotel_reservation.dto.RoomDto;
 import com.alexander.hotel_reservation.entity.Room;
 import com.alexander.hotel_reservation.entity.User;
+import com.alexander.hotel_reservation.repository.RoomRepository;
 import com.alexander.hotel_reservation.service.RoomService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,9 @@ import java.util.Optional;
 public class RoomController {
 
     private final RoomService roomService;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
@@ -112,6 +117,41 @@ public class RoomController {
         roomService.createRoom(roomDto);
 
         return "redirect:/rooms";
+    }
+
+    @GetMapping("/search")
+    public String searchRooms(@RequestParam("keyword") String keyword,
+                              Model model,
+                              HttpSession session) {
+
+        // get logged in user
+        User user = (User) session.getAttribute("loggedInUser");
+
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        // search rooms from DB
+        List<Room> results = roomRepository.searchByRoomType(keyword);
+
+        model.addAttribute("rooms", results);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("user", user);
+
+        // messages (same idea as your book project)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+
+            int count = results.size();
+
+            if (count == 0) {
+                model.addAttribute("error", "No rooms found");
+            } else {
+                model.addAttribute("success",
+                        count + (count == 1 ? " room found" : " rooms found"));
+            }
+        }
+
+        return "dashboard";
     }
 
     // edit page

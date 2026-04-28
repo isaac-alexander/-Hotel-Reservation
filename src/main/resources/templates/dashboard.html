@@ -32,6 +32,18 @@
         <span th:text="${error}"></span>
     </div>
 
+    <form action="/rooms/search" method="get" class="mb-3 d-flex">
+
+        <input type="text"
+               name="keyword"
+               class="form-control me-2"
+               placeholder="Search room type (e.g. Single, Queen)"
+               required>
+
+        <button class="btn btn-dark">Search</button>
+
+    </form>
+
     <!-- ROOMS -->
     <div class="row g-3">
 

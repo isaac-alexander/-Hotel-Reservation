@@ -27,6 +27,8 @@
                 <th>Check In</th>
                 <th>Check Out</th>
                 <th>Status</th>
+                <th>Code</th>
+                <th>Total Price</th>
 
                 <th th:if="${user != null and user.role != 'customer'}">Customer</th>
                 <th>Actions</th>
@@ -41,6 +43,8 @@
                 <td th:text="${b.checkIn}"></td>
                 <td th:text="${b.checkOut}"></td>
                 <td th:text="${b.status}"></td>
+                <td th:text="${b.bookingCode}"></td>
+                <td th:text="${b.totalPrice}"></td>
 
                 <td th:if="${user != null and user.role != 'customer'}"
                     th:text="${b.user.name}">

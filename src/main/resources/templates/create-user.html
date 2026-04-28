@@ -19,8 +19,16 @@
 
         <h4>CREATE USER</h4>
 
+        <h4>CREATE USER</h4>
+
+        <!-- success message -->
         <div th:if="${success}" class="alert alert-success auto-hide">
             <span th:text="${success}"></span>
+        </div>
+
+        <!-- error message -->
+        <div th:if="${error}" class="alert alert-danger auto-hide">
+            <span th:text="${error}"></span>
         </div>
 
         <form th:action="@{/users/create}" th:object="${user}" method="post">
@@ -59,6 +67,21 @@
     </div>
 
 </div>
+
+<script>
+    // wait 5 seconds then hide alerts
+    setTimeout(function () {
+
+        // select all elements with class auto-hide
+        let alerts = document.querySelectorAll(".auto-hide");
+
+        // loop through them
+        alerts.forEach(function (alert) {
+            alert.style.display = "none";
+        });
+
+    }, 5000);
+</script>
 
 </body>
 </html>

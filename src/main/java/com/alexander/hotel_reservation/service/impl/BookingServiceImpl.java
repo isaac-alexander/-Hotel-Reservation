@@ -4,9 +4,14 @@ import com.alexander.hotel_reservation.dto.BookingDto;
 import com.alexander.hotel_reservation.entity.Booking;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.repository.BookingRepository;
+import com.alexander.hotel_reservation.repository.RoomRepository;
 import com.alexander.hotel_reservation.service.BookingService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.alexander.hotel_reservation.entity.Room;
 
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +20,9 @@ import java.util.Optional;
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
+
+    @Autowired
+    private  RoomRepository roomRepository;
 
     public BookingServiceImpl(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
@@ -49,6 +57,35 @@ public class BookingServiceImpl implements BookingService {
             }
         }
 
+        // get room from database
+        Optional<Room> roomOptional = roomRepository.findById(bookingDto.getRoomId());
+
+        // if room does not exist
+        if (roomOptional.isEmpty()) {
+            return false;
+        }
+
+        Room room = roomOptional.get();
+
+        // calculate number of days
+        long days = ChronoUnit.DAYS.between(
+                bookingDto.getCheckIn(),
+                bookingDto.getCheckOut()
+        );
+
+        // prevent wrong booking
+        if (days <= 0) {
+            return false;
+        }
+
+        // calculate total price using room price
+        double totalPrice = room.getPrice() * days;
+
+        // generate booking code (simple unique code)
+        String code = "BK-" + UUID.randomUUID().toString()
+                .substring(0, 8)
+                .toUpperCase();
+
         // create new booking object
         Booking newBooking = new Booking();
 
@@ -56,6 +93,9 @@ public class BookingServiceImpl implements BookingService {
         newBooking.setRoomId(bookingDto.getRoomId()); // set room
         newBooking.setCheckIn(bookingDto.getCheckIn()); // set check-in date
         newBooking.setCheckOut(bookingDto.getCheckOut()); // set check-out date
+
+        newBooking.setTotalPrice(totalPrice);
+        newBooking.setBookingCode(code);
 
         // default status
         newBooking.setStatus("PENDING");

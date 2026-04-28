@@ -2,6 +2,7 @@ package com.alexander.hotel_reservation.repository;
 
 import com.alexander.hotel_reservation.entity.Room;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,7 +15,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findAvailableRooms();
 
     //  get room by type search
-    @Query(value = "select * from room where room_type like %:type%", nativeQuery = true)
-    List<Room> searchByRoomType(String type);
-
+    @Query(value = "select * from room where lower(room_type) like lower(concat('%', :type, '%'))", nativeQuery = true)
+    List<Room> searchByRoomType(@Param("type") String type);
 }
