@@ -27,8 +27,11 @@ public class Booking {
 
     private String checkOutTime;
 
+    // ensure the database always has values
+    @Column(nullable = false, unique = true)
     private String bookingCode;
 
+    @Column(nullable = false)
     private double totalPrice;
 
     public Booking() {
@@ -103,7 +106,7 @@ public class Booking {
         this.bookingCode = bookingCode;
     }
 
-    public Double getTotalPrice() {
+    public double getTotalPrice() {
         return totalPrice;
     }
 

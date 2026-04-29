@@ -91,3 +91,99 @@ input, select {
         position: relative;
     }
 }
+
+.custom-carousel {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.carousel-item {
+    height: 300px;
+}
+
+.carousel-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 40px;
+    color: white;
+}
+
+.carousel-content h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.carousel-content p {
+    font-size: 15px;
+    margin: 2px 0;
+    opacity: 0.95;
+}
+
+/* arrows visibility */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+}
+.carousel-content {
+    position: relative;
+    z-index: 1;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    z-index: 2;
+}
+.slide-home {
+    background: linear-gradient(
+        rgba(13, 59, 102, 0.75),
+        rgba(13, 59, 102, 0.75)
+    ),
+    url("https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1600&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+}
+
+.slide-single {
+    background: linear-gradient(
+        rgba(13, 59, 102, 0.75),
+        rgba(13, 59, 102, 0.75)
+    ),
+    url("https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1600&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+}
+
+.slide-studio {
+    background: linear-gradient(
+        rgba(13, 59, 102, 0.75),
+        rgba(13, 59, 102, 0.75)
+    ),
+    url("https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1600&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+}
+
+.slide-queen {
+    background: linear-gradient(
+        rgba(13, 59, 102, 0.75),
+        rgba(13, 59, 102, 0.75)
+    ),
+    url("https://plus.unsplash.com/premium_photo-1661879252375-7c1db1932572?q=80&w=1600&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+}
+
+.slide-king {
+    background: linear-gradient(
+        rgba(13, 59, 102, 0.75),
+        rgba(13, 59, 102, 0.75)
+    ),
+    url("https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1600&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
+}

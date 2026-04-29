@@ -17,4 +17,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     //  get room by type search
     @Query(value = "select * from room where lower(room_type) like lower(concat('%', :type, '%'))", nativeQuery = true)
     List<Room> searchByRoomType(@Param("type") String type);
+//    List<Room> findByRoomTypeContainingIgnoreCase(String type);
+
 }
