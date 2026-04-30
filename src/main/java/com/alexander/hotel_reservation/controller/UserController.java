@@ -3,14 +3,13 @@ package com.alexander.hotel_reservation.controller;
 import com.alexander.hotel_reservation.dto.CreateUserDto;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.service.UserService;
-import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -24,12 +23,10 @@ public class UserController {
 
     // show create user page
     @GetMapping("/create")
-    public String showCreateUser(Model model, HttpSession session) {
+    public String showCreateUser(Model model,
+                                 Authentication authentication) {
 
-        Optional<User> userOptional =
-                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
-
-        if (userOptional.isEmpty()) {
+        if (authentication == null) {
             return "redirect:/login";
         }
 
@@ -42,13 +39,10 @@ public class UserController {
     @PostMapping("/create")
     public String createUser(@Valid @ModelAttribute("user") CreateUserDto dto,
                              BindingResult result,
-                             HttpSession session,
+                             Authentication authentication,
                              Model model) {
 
-        Optional<User> userOptional =
-                Optional.ofNullable((User) session.getAttribute("loggedInUser"));
-
-        if (userOptional.isEmpty()) {
+        if (authentication == null) {
             return "redirect:/login";
         }
 
@@ -56,7 +50,9 @@ public class UserController {
             return "create-user";
         }
 
-        User currentUser = userOptional.get();
+        // get current logged in user
+        String email = authentication.getName();
+        User currentUser = userService.findByEmail(email);
 
         User newUser = new User();
         newUser.setName(dto.getName());

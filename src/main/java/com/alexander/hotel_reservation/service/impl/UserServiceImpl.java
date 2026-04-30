@@ -3,6 +3,7 @@ package com.alexander.hotel_reservation.service.impl;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.repository.UserRepository;
 import com.alexander.hotel_reservation.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,9 +12,12 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // register user
@@ -27,30 +31,14 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Email already exists");
         }
 
-        // set default role
-        // user.setRole("customer");
+        // hash password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(user);
     }
 
-    // login logic using optional
     @Override
-    public User login(String email, String password) {
-
-        // find user by email
-        Optional<User> foundUser = userRepository.findByEmail(email);
-
-        // check if user exists
-        if (foundUser.isPresent()) {
-
-            User user = foundUser.get();
-
-            // compare password
-            if (user.getPassword().equals(password)) {
-                return user;
-            }
-        }
-
-        return null;
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }
