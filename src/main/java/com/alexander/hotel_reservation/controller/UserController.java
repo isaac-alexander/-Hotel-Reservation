@@ -60,36 +60,9 @@ public class UserController {
         newUser.setPassword(dto.getPassword());
 
         try {
-
-            // ADMIN
-            if (currentUser.getRole().equals("admin")) {
-
-                if ("receptionist".equals(dto.getRole())) {
-                    newUser.setRole("receptionist");
-                } else {
-                    newUser.setRole("customer");
-                }
-
-                userService.register(newUser);
-            }
-
-            // RECEPTIONIST
-            else if (currentUser.getRole().equals("receptionist")) {
-
-                newUser.setRole("customer");
-
-                userService.register(newUser);
-            }
-
-            // CUSTOMER BLOCKED
-            else {
-                return "redirect:/dashboard";
-            }
-
+            userService.register(newUser);
             model.addAttribute("success", "User created successfully");
-
         } catch (RuntimeException e) {
-
             model.addAttribute("error", e.getMessage());
         }
 

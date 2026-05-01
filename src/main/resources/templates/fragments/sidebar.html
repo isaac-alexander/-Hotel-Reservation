@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 
 <body>
 
@@ -15,12 +17,12 @@
 
         <div th:if="${user != null}">
 
-            <a th:if="${user.role == 'admin'}"
+            <a sec:authorize="hasRole('ADMIN')"
                href="/rooms/new">
                 ADD ROOM
             </a>
 
-            <a th:if="${user.role == 'admin' or user.role == 'receptionist'}"
+            <a sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
                href="/users/create">
 
                 <span th:if="${user.role == 'admin'}">CREATE USER</span>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Booking History</title>
 
@@ -30,8 +32,7 @@
                 <th>Code</th>
                 <th>Total Price</th>
 
-                <th th:if="${user != null and user.role != 'customer'}">Customer</th>
-                <th>Actions</th>
+                <th sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')">Customer</th>                <th>Actions</th>
             </tr>
             </thead>
 
@@ -46,7 +47,7 @@
                 <td th:text="${b.bookingCode}"></td>
                 <td th:text="${b.totalPrice}"></td>
 
-                <td th:if="${user != null and user.role != 'customer'}"
+                <td sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
                     th:text="${b.user.name}">
                 </td>
 
@@ -55,45 +56,41 @@
                     <!-- UPDATE - ONLY SHOW FOR PENDING -->
 
                     <!-- CONFIRM -->
-                    <a th:if="${user != null
-                               and user.role != 'customer'
-                               and b.status == 'PENDING'}"
+                    <a sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                       th:if="${b.status == 'PENDING'}"
                        th:href="@{'/bookings/confirm/' + ${b.id}}"
                        class="btn btn-success btn-sm">
                         Confirm
                     </a>
 
                     <!-- REJECT -->
-                    <a th:if="${user != null
-                               and user.role != 'customer'
-                               and b.status == 'PENDING'}"
+                    <a sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                       th:if="${b.status == 'PENDING'}"
                        th:href="@{'/bookings/reject/' + ${b.id}}"
                        class="btn btn-danger btn-sm">
                         Reject
                     </a>
 
-                    <!-- NEW: CUSTOMER CANCEL -->
-                    <a th:if="${user != null
-                               and user.role == 'customer'
-                               and b.status == 'PENDING'}"
+
+                    <!-- CUSTOMER CANCEL -->
+                    <a sec:authorize="hasRole('CUSTOMER')"
+                       th:if="${b.status == 'PENDING'}"
                        th:href="@{'/bookings/cancel/' + ${b.id}}"
                        class="btn btn-warning btn-sm">
                         Cancel
                     </a>
 
                     <!-- CHECK-IN ONLY AFTER CONFIRMED -->
-                    <a th:if="${user != null
-                               and user.role == 'receptionist'
-                               and b.status == 'CONFIRMED'}"
+                    <a sec:authorize="hasRole('RECEPTIONIST')"
+                       th:if="${b.status == 'CONFIRMED'}"
                        th:href="@{'/bookings/checkin/' + ${b.id}}"
                        class="btn btn-primary btn-sm">
                         Check In
                     </a>
 
                     <!-- CHECK-OUT ONLY AFTER CHECKED IN -->
-                    <a th:if="${user != null
-                               and user.role == 'receptionist'
-                               and b.status == 'CHECKED_IN'}"
+                    <a sec:authorize="hasRole('RECEPTIONIST')"
+                       th:if="${b.status == 'CHECKED_IN'}"
                        th:href="@{'/bookings/checkout/' + ${b.id}}"
                        class="btn btn-warning btn-sm">
                         Check Out

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Rooms</title>
 
@@ -36,13 +38,14 @@
                     VIEW
                 </a>
 
-                <a th:if="${user != null and user.role == 'customer' and room.available}"
+                <a sec:authorize="hasRole('CUSTOMER')"
+                   th:if="${room.available}"
                    th:href="@{'/bookings/new/' + ${room.id}}"
                    class="btn btn-success btn-sm mt-2 w-100">
                     BOOK
                 </a>
 
-                <div th:if="${user != null and user.role == 'admin'}" class="d-flex gap-2 mt-2">
+                <div sec:authorize="hasRole('ADMIN')" class="d-flex gap-2 mt-2">
 
                     <a th:href="@{'/rooms/edit/' + ${room.id}}"
                        class="btn btn-warning btn-sm w-50">

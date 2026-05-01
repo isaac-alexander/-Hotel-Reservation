@@ -112,6 +112,18 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findByUser_Id(userId);
     }
 
+    @Override
+    public List<Booking> getBookingsForUser(User user) {
+
+        // ADMIN & RECEPTIONIST - see all bookings
+        if (user.getRole().equals("admin") || user.getRole().equals("receptionist")) {
+            return bookingRepository.findAll();
+        }
+
+        // CUSTOMER - only their bookings
+        return bookingRepository.findByUser_Id(user.getId());
+    }
+
     // GET ALL BOOKINGS ADMIN / RECEPTIONIST
     @Override
     public List<Booking> getAllBookings() {

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
 <head>
     <title>Create User</title>
 
@@ -50,7 +52,7 @@
 
             <!-- SAFE ROLE CHECK -->
             <label>Role</label>
-            <select th:if="${session.loggedInUser != null and session.loggedInUser.role == 'admin'}"
+            <select sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
                     th:field="*{role}"
                     class="form-control mb-3">
 

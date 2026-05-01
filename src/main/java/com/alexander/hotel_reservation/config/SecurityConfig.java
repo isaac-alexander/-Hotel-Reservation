@@ -27,17 +27,20 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
-                        // public pages
-                        .requestMatchers("/login", "/users/create").permitAll()
+                        // public
+                        .requestMatchers("/login", "/css/**", "/js/**").permitAll()
 
-                        // admin only
+                        // ADMIN ONLY
                         .requestMatchers("/rooms/new/**").hasRole("ADMIN")
                         .requestMatchers("/rooms/edit/**").hasRole("ADMIN")
                         .requestMatchers("/rooms/delete/**").hasRole("ADMIN")
 
-                        // receptionist + admin
+                        // ADMIN + RECEPTIONIST
+                        .requestMatchers("/users/create/**").hasAnyRole("ADMIN", "RECEPTIONIST")
                         .requestMatchers("/bookings/confirm/**").hasAnyRole("ADMIN", "RECEPTIONIST")
                         .requestMatchers("/bookings/reject/**").hasAnyRole("ADMIN", "RECEPTIONIST")
+
+                        // RECEPTIONIST ONLY
                         .requestMatchers("/bookings/checkin/**").hasRole("RECEPTIONIST")
                         .requestMatchers("/bookings/checkout/**").hasRole("RECEPTIONIST")
 

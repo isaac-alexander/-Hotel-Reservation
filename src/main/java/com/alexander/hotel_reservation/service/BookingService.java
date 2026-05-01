@@ -11,7 +11,10 @@ public interface BookingService {
     // create booking
     boolean createBooking(BookingDto bookingDto, User user);
 
+
     // get bookings for logged in user
+    List<Booking> getBookingsForUser(User user);
+
     List<Booking> getBookingsByUser(Long userId);
 
     // get all bookings admin/receptionist

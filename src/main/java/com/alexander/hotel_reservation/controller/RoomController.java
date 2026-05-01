@@ -84,9 +84,9 @@ public class RoomController {
         User user = userService.findByEmail(email);
 
         // only admin allowed
-        if (!user.getRole().equals("admin")) {
-            return "redirect:/rooms";
-        }
+//        if (!user.getRole().equals("admin")) {
+//            return "redirect:/rooms";
+//        }
 
         model.addAttribute("room", new RoomDto());
 
@@ -101,18 +101,17 @@ public class RoomController {
         if (authentication == null) {
             return "redirect:/login";
         }
-
-        String email = authentication.getName();
-        User user = userService.findByEmail(email);
-
-        if (!user.getRole().equals("admin")) {
-            return "redirect:/rooms";
-        }
+//
+//        String email = authentication.getName();
+//        User user = userService.findByEmail(email);
+//
+//        if (!user.getRole().equals("admin")) {
+//            return "redirect:/rooms";
+//        }
 
         roomService.createRoom(roomDto);
 
         return "redirect:/rooms";
     }
 
-    // remaining methods unchanged pattern (same replacement applied)
 }

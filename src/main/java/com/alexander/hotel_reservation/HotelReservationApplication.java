@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class HotelReservationApplication {
@@ -15,17 +16,22 @@ public class HotelReservationApplication {
 
     // create default admin when app starts
     @Bean
-    CommandLineRunner run(UserRepository userRepository) {
+    CommandLineRunner run(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder) {
+
         return args -> {
 
             // check if admin already exists
             if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
 
-                // insert admin using query
+                // encode password
+                String encodedPassword = passwordEncoder.encode("12345");
+
+                // insert admin
                 userRepository.insertUser(
                         "Admin",
                         "admin@gmail.com",
-                        "12345",
+                        encodedPassword,
                         "admin"
                 );
 

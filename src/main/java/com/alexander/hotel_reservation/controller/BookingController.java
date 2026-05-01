@@ -95,13 +95,7 @@ public class BookingController {
         String email = authentication.getName();
         User user = userService.findByEmail(email);
 
-        List<Booking> bookings;
-
-        if (user.getRole().equals("admin") || user.getRole().equals("receptionist")) {
-            bookings = bookingService.getAllBookings();
-        } else {
-            bookings = bookingService.getBookingsByUser(user.getId());
-        }
+        List<Booking> bookings = bookingService.getBookingsForUser(user);
 
         model.addAttribute("bookings", bookings);
         model.addAttribute("user", user);

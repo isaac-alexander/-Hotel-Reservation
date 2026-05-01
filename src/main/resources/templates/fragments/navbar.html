@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <body>
 
@@ -13,13 +14,13 @@
 
         <div class="d-flex gap-3">
 
-            <a th:if="${user != null and user.role == 'admin'}"
+            <a sec:authorize="hasRole('ADMIN')"
                class="nav-link text-info"
                href="/users/create">
                 CREATE USER
             </a>
 
-            <a th:if="${user != null and user.role == 'receptionist'}"
+            <a sec:authorize="hasRole('RECEPTIONIST')"
                class="nav-link text-success"
                href="/users/create">
                 CREATE CUSTOMER
