@@ -114,4 +114,28 @@ public class RoomController {
         return "redirect:/rooms";
     }
 
+
+    // edit page
+    @GetMapping("/edit/{id}")
+    public String editRoom(@PathVariable Long id, Model model, Authentication authentication) {
+
+
+        String email = authentication.getName();
+        User user = userService.findByEmail(email);
+
+        Room room = roomService.getRoomById(id);
+
+        // convert entity to dto
+        RoomDto roomDto = new RoomDto();
+        roomDto.setRoomType(room.getRoomType());
+        roomDto.setPrice(room.getPrice());
+        roomDto.setDescription(room.getDescription());
+        roomDto.setAvailable(room.isAvailable());
+
+        model.addAttribute("room", roomDto);
+        model.addAttribute("roomId", id);
+
+        return "edit-room";
+    }
+
 }

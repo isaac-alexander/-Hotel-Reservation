@@ -6,6 +6,7 @@ import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.repository.BookingRepository;
 import com.alexander.hotel_reservation.repository.RoomRepository;
 import com.alexander.hotel_reservation.service.BookingService;
+import com.alexander.hotel_reservation.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alexander.hotel_reservation.entity.Room;
@@ -21,11 +22,16 @@ public class BookingServiceImpl implements BookingService {
 
     private final BookingRepository bookingRepository;
 
-    @Autowired
-    private  RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-    public BookingServiceImpl(BookingRepository bookingRepository) {
+    private final EmailService emailService;
+
+    public BookingServiceImpl(BookingRepository bookingRepository,
+                              RoomRepository roomRepository,
+                              EmailService emailService) {
         this.bookingRepository = bookingRepository;
+        this.roomRepository = roomRepository;
+        this.emailService = emailService;
     }
 
     // CREATE BOOKING
@@ -103,6 +109,12 @@ public class BookingServiceImpl implements BookingService {
         // save booking
         bookingRepository.save(newBooking);
 
+        emailService.sendBookingStatusEmail(
+                user.getEmail(),
+                "PENDING",
+                newBooking.getBookingCode()
+        );
+
         return true; // success
     }
 
@@ -143,6 +155,12 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(status); // update status
 
             bookingRepository.save(booking); // save changes
+
+            // SEND EMAIL
+            String email = booking.getUser().getEmail();
+            String bookingCode = booking.getBookingCode();
+
+            emailService.sendBookingStatusEmail(email, status, bookingCode);
         }
     }
 

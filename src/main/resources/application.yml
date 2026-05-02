@@ -14,6 +14,18 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: houseoface81@gmail.com
+    password: bfzoiiuarznjvgom
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   mvc:
     hiddenmethod:
       filter:

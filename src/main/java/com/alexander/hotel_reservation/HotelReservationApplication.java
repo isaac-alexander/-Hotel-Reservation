@@ -22,7 +22,7 @@ public class HotelReservationApplication {
         return args -> {
 
             // check if admin already exists
-            if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {
+            if (userRepository.findByEmail("houseoface81@gmail.com").isEmpty()) {
 
                 // encode password
                 String encodedPassword = passwordEncoder.encode("12345");
@@ -30,7 +30,7 @@ public class HotelReservationApplication {
                 // insert admin
                 userRepository.insertUser(
                         "Admin",
-                        "admin@gmail.com",
+                        "houseoface81@gmail.com",
                         encodedPassword,
                         "admin"
                 );
