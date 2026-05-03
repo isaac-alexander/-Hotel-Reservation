@@ -138,4 +138,13 @@ public class RoomController {
         return "edit-room";
     }
 
+    @PostMapping("/edit/{id}")
+    public String updateRoom(@PathVariable Long id,
+                             @ModelAttribute("room") RoomDto roomDto) {
+
+        roomService.updateRoom(id, roomDto);
+
+        return "redirect:/rooms";
+    }
+
 }

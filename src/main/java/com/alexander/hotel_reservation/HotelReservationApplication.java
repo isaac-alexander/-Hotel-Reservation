@@ -1,6 +1,7 @@
 package com.alexander.hotel_reservation;
 
 import com.alexander.hotel_reservation.repository.UserRepository;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class HotelReservationApplication {
 
     public static void main(String[] args) {
+
+        //LOAD .env
+        Dotenv dotenv = Dotenv.load();
+
+        System.setProperty("MAIL_USERNAME", dotenv.get("MAIL_USERNAME"));
+        System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
+
+        System.out.println("EMAIL: " + System.getProperty("MAIL_USERNAME"));
+
         SpringApplication.run(HotelReservationApplication.class, args);
     }
 
