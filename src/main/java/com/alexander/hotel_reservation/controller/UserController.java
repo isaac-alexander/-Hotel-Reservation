@@ -21,6 +21,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    private boolean isAdminOrReceptionist(User user) {
+        return user.getRole().equals("admin") ||
+                user.getRole().equals("receptionist");
+    }
+
     // show create user page
     @GetMapping("/create")
     public String showCreateUser(Model model,
@@ -58,6 +63,7 @@ public class UserController {
         newUser.setName(dto.getName());
         newUser.setEmail(dto.getEmail());
         newUser.setPassword(dto.getPassword());
+        newUser.setRole(dto.getRole());
 
         try {
             userService.register(newUser);
@@ -67,5 +73,84 @@ public class UserController {
         }
 
         return "create-user";
+    }
+
+    @GetMapping
+    public String viewUsers(Model model, Authentication authentication) {
+
+        if (authentication == null) return "redirect:/login";
+
+        User currentUser = userService.findByEmail(authentication.getName());
+
+        if (!isAdminOrReceptionist(currentUser)) {
+            return "redirect:/dashboard";
+        }
+
+        model.addAttribute("users", userService.getAllUsers());
+
+        return "users"; // create users.html
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditUser(@PathVariable Long id,
+                               Model model,
+                               Authentication authentication) {
+
+        if (authentication == null) return "redirect:/login";
+
+        User currentUser = userService.findByEmail(authentication.getName());
+
+        if (!isAdminOrReceptionist(currentUser)) {
+            return "redirect:/dashboard";
+        }
+
+        User user = userService.getUserById(id);
+
+        if (user == null) return "redirect:/users";
+
+        CreateUserDto dto = new CreateUserDto();
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setRole(user.getRole());
+
+        model.addAttribute("user", dto);
+        model.addAttribute("userId", id);
+
+        return "edit-user";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateUser(@PathVariable Long id,
+                             @ModelAttribute("user") CreateUserDto dto,
+                             Authentication authentication) {
+
+        if (authentication == null) return "redirect:/login";
+
+        User currentUser = userService.findByEmail(authentication.getName());
+
+        if (!isAdminOrReceptionist(currentUser)) {
+            return "redirect:/dashboard";
+        }
+
+        userService.updateUser(id, dto);
+
+        return "redirect:/users";
+    }
+
+    @PostMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id,
+                             Authentication authentication) {
+
+        if (authentication == null) return "redirect:/login";
+
+        User currentUser = userService.findByEmail(authentication.getName());
+
+        if (!isAdminOrReceptionist(currentUser)) {
+            return "redirect:/dashboard";
+        }
+
+        userService.deleteUser(id);
+
+        return "redirect:/users";
     }
 }

@@ -29,6 +29,11 @@
                 <span th:if="${user.role == 'receptionist'}">CREATE CUSTOMER</span>
 
             </a>
+            <a sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+               href="/users"> VIEW USERS
+            </a>
+
+
 
         </div>
 
