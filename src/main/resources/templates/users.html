@@ -3,36 +3,91 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
-    <title>USERS</title>
+    <title>Users</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
 <body>
-<table class="table">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Role</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
 
-    <tbody>
-    <tr th:each="u : ${users}">
-        <td th:text="${u.name}"></td>
-        <td th:text="${u.email}"></td>
-        <td th:text="${u.role}"></td>
+<!-- SIDEBAR -->
+<div th:replace="fragments/sidebar :: sidebar"></div>
 
-        <td>
-            <a th:href="@{/users/edit/{id}(id=${u.id})}" class="btn btn-warning">Edit</a>
+<!-- MAIN CONTENT -->
+<div class="main-content">
 
-            <form th:action="@{/users/delete/{id}(id=${u.id})}" method="post" style="display:inline;">
-                <button class="btn btn-danger">Delete</button>
-            </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <!-- NAVBAR -->
+    <div th:replace="fragments/navbar :: navbar"></div>
+
+    <!-- CARD WRAPPER -->
+    <div class="card p-4 shadow-sm">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4>ALL USERS</h4>
+
+            <a href="/users/create"
+               class="btn btn-primary"
+               sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')">
+                + CREATE USER
+            </a>
+        </div>
+
+        <!-- TABLE -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="u : ${users}">
+
+                    <td th:text="${u.name}"></td>
+                    <td th:text="${u.email}"></td>
+
+                    <!-- ROLE BADGE -->
+                    <td>
+                        <span class="badge bg-primary text-uppercase"
+                              th:text="${u.role}"></span>
+                    </td>
+
+                    <!-- ACTIONS -->
+                    <td class="text-center">
+
+                        <a th:href="@{/users/edit/{id}(id=${u.id})}"
+                           class="btn btn-sm btn-warning me-2">
+                            Edit
+                        </a>
+
+                        <form th:action="@{/users/delete/{id}(id=${u.id})}"
+                              method="post"
+                              style="display:inline;">
+
+                            <button class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Delete this user?')">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
 </body>
 </html>

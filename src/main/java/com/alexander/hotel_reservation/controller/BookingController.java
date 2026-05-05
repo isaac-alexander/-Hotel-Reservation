@@ -83,6 +83,47 @@ public class BookingController {
         return "booking-form";
     }
 
+    @PostMapping("/confirm/{id}")
+    public String confirmBooking(@PathVariable Long id) {
+
+        bookingService.updateStatus(id, "CONFIRMED");
+
+        return "redirect:/bookings/history";
+    }
+
+    @PostMapping("/reject/{id}")
+    public String rejectBooking(@PathVariable Long id) {
+
+        bookingService.updateStatus(id, "REJECTED");
+
+        return "redirect:/bookings/history";
+    }
+
+    @PostMapping("/cancel/{id}")
+    public String cancelBooking(@PathVariable Long id) {
+
+        bookingService.updateStatus(id, "CANCELLED");
+
+        return "redirect:/bookings/history";
+    }
+
+    @PostMapping("/checkin/{id}")
+    public String checkIn(@PathVariable Long id) {
+
+        bookingService.checkIn(id);
+
+        return "redirect:/bookings/history";
+    }
+
+    @PostMapping("/checkout/{id}")
+    public String checkOut(@PathVariable Long id) {
+
+        bookingService.checkOut(id);
+
+        return "redirect:/bookings/history";
+    }
+
+
     // BOOKING HISTORY
     @GetMapping("/history")
     public String bookingHistory(Model model,

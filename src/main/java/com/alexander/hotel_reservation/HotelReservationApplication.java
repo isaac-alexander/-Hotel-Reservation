@@ -16,11 +16,6 @@ public class HotelReservationApplication {
         //LOAD .env
         Dotenv dotenv = Dotenv.load();
 
-        System.setProperty("MAIL_USERNAME", dotenv.get("MAIL_USERNAME"));
-        System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
-
-        System.out.println("EMAIL: " + System.getProperty("MAIL_USERNAME"));
-
         SpringApplication.run(HotelReservationApplication.class, args);
     }
 

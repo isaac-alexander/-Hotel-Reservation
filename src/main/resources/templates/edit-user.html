@@ -17,60 +17,85 @@
 
     <div th:replace="fragments/navbar :: navbar"></div>
 
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold">Edit User</h3>
+        <a href="/users" class="btn btn-outline-secondary btn-sm">Back to Users</a>
+    </div>
+
     <div class="card p-4 shadow-sm">
 
-        <h4>EDIT USER</h4>
-
-        <!-- success message -->
         <div th:if="${success}" class="alert alert-success auto-hide">
             <span th:text="${success}"></span>
         </div>
 
-        <!-- error message -->
         <div th:if="${error}" class="alert alert-danger auto-hide">
             <span th:text="${error}"></span>
         </div>
 
-        <form th:action="@{'/users/edit/' + ${user.id}}"
+        <form th:action="@{'/users/edit/' + ${userId}}"
               th:object="${user}"
               method="post">
 
-            <!-- NAME -->
-            <div class="mb-3">
-                <label>Full Name</label>
-                <input type="text" th:field="*{name}" class="form-control mb-2" required>
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Full Name</label>
+                        <input type="text"
+                               th:field="*{name}"
+                               class="form-control"
+                               placeholder="Enter full name"
+                               required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email"
+                               th:field="*{email}"
+                               class="form-control"
+                               placeholder="Enter email"
+                               required>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Password</label>
+                        <input type="password"
+                               th:field="*{password}"
+                               class="form-control"
+                               placeholder="New password">
+                        <small class="text-muted">
+                            Leave empty to keep existing password
+                        </small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Role</label>
+
+                        <select sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                                th:field="*{role}"
+                                class="form-control">
+
+                            <option value="customer">Customer</option>
+                            <option value="receptionist">Receptionist</option>
+                            <option value="admin">Admin</option>
+
+                        </select>
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- EMAIL -->
-            <div class="mb-3">
-                <label>Email</label>
-                <input type="email" th:field="*{email}" class="form-control mb-2" required>
+            <!-- BUTTONS -->
+            <div class="mt-4 d-flex gap-2">
+                <button class="btn btn-primary w-50">Update User</button>
+                <a href="/users" class="btn btn-secondary w-50">Cancel</a>
             </div>
-
-            <!-- PASSWORD -->
-            <div class="mb-3">
-                <label>Password</label>
-                <input type="password" th:field="*{password}" class="form-control mb-2">
-                <small class="text-muted">Leave blank to keep current password</small>
-            </div>
-
-            <!-- ROLE -->
-            <div class="mb-3">
-                <label>Role</label>
-
-                <select sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
-                        th:field="*{role}"
-                        class="form-control">
-
-                    <option value="customer">Customer</option>
-                    <option value="receptionist">Receptionist</option>
-                    <option value="admin">Admin</option>
-
-                </select>
-            </div>
-
-            <button class="btn btn-primary w-100">UPDATE USER</button>
-            <a href="/users" class="btn btn-secondary mt-3 w-100">BACK</a>
 
         </form>
 

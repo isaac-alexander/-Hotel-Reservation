@@ -55,46 +55,54 @@
 
                     <!-- UPDATE - ONLY SHOW FOR PENDING -->
 
+                <td>
+
                     <!-- CONFIRM -->
-                    <a sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
-                       th:if="${b.status == 'PENDING'}"
-                       th:href="@{'/bookings/confirm/' + ${b.id}}"
-                       class="btn btn-success btn-sm">
-                        Confirm
-                    </a>
+                    <form th:action="@{'/bookings/confirm/' + ${b.id}}"
+                          method="post"
+                          sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                          th:if="${b.status == 'PENDING'}"
+                          style="display:inline;">
+                        <button class="btn btn-success btn-sm">Confirm</button>
+                    </form>
 
                     <!-- REJECT -->
-                    <a sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
-                       th:if="${b.status == 'PENDING'}"
-                       th:href="@{'/bookings/reject/' + ${b.id}}"
-                       class="btn btn-danger btn-sm">
-                        Reject
-                    </a>
+                    <form th:action="@{'/bookings/reject/' + ${b.id}}"
+                          method="post"
+                          sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                          th:if="${b.status == 'PENDING'}"
+                          style="display:inline;">
+                        <button class="btn btn-danger btn-sm">Reject</button>
+                    </form>
 
+                    <!-- CANCEL -->
+                    <form th:action="@{'/bookings/cancel/' + ${b.id}}"
+                          method="post"
+                          sec:authorize="hasRole('CUSTOMER')"
+                          th:if="${b.status == 'PENDING'}"
+                          style="display:inline;">
+                        <button class="btn btn-warning btn-sm">Cancel</button>
+                    </form>
 
-                    <!-- CUSTOMER CANCEL -->
-                    <a sec:authorize="hasRole('CUSTOMER')"
-                       th:if="${b.status == 'PENDING'}"
-                       th:href="@{'/bookings/cancel/' + ${b.id}}"
-                       class="btn btn-warning btn-sm">
-                        Cancel
-                    </a>
+                    <!-- CHECK IN -->
+                    <form th:action="@{'/bookings/checkin/' + ${b.id}}"
+                          method="post"
+                          sec:authorize="hasRole('RECEPTIONIST')"
+                          th:if="${b.status == 'CONFIRMED'}"
+                          style="display:inline;">
+                        <button class="btn btn-primary btn-sm">Check In</button>
+                    </form>
 
-                    <!-- CHECK-IN ONLY AFTER CONFIRMED -->
-                    <a sec:authorize="hasRole('RECEPTIONIST')"
-                       th:if="${b.status == 'CONFIRMED'}"
-                       th:href="@{'/bookings/checkin/' + ${b.id}}"
-                       class="btn btn-primary btn-sm">
-                        Check In
-                    </a>
+                    <!-- CHECK OUT -->
+                    <form th:action="@{'/bookings/checkout/' + ${b.id}}"
+                          method="post"
+                          sec:authorize="hasRole('RECEPTIONIST')"
+                          th:if="${b.status == 'CHECKED_IN'}"
+                          style="display:inline;">
+                        <button class="btn btn-warning btn-sm">Check Out</button>
+                    </form>
 
-                    <!-- CHECK-OUT ONLY AFTER CHECKED IN -->
-                    <a sec:authorize="hasRole('RECEPTIONIST')"
-                       th:if="${b.status == 'CHECKED_IN'}"
-                       th:href="@{'/bookings/checkout/' + ${b.id}}"
-                       class="btn btn-warning btn-sm">
-                        Check Out
-                    </a>
+                </td>
 
                 </td>
 

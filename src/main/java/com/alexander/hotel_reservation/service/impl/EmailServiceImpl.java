@@ -15,18 +15,23 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendBookingStatusEmail(String toEmail, String status, String bookingCode) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setFrom("Hotel Booking <houseoface81@gmail.com>");
-        message.setTo(toEmail);
-        message.setSubject("Booking Update - " + status);
+            message.setFrom("houseoface81@gmail.com");
+            message.setTo(toEmail);
+            message.setSubject("Booking Update - " + status);
 
-        String body = "Hello,\n\n" +
-                "Your booking (" + bookingCode + ") status is now: " + status + "\n\n" +
-                "Thank you for choosing our hotel.";
+            String body = "Hello,\n\n" +
+                    "Your booking (" + bookingCode + ") status is now: " + status + "\n\n" +
+                    "Thank you for choosing our hotel.";
 
-        message.setText(body);
+            message.setText(body);
 
-        mailSender.send(message);
+            mailSender.send(message);
+
+        } catch (Exception e) {
+            System.out.println("EMAIL FAILED: " + e.getMessage());
+        }
     }
 }
