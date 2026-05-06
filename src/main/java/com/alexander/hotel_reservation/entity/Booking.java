@@ -20,8 +20,11 @@ public class Booking {
     private LocalDate checkIn;
     private LocalDate checkOut;
 
-    private String status;
-    // PENDING, CONFIRMED, CANCELLED, CHECKED_IN, CHECKED_OUT
+    private String status; // PENDING, CONFIRMED, CANCELLED, CHECKED_IN, CHECKED_OUT
+
+    private String paymentStatus; // PENDING, PAID, FAILED
+
+    private String paymentReference;
 
     private String checkInTime;
 
