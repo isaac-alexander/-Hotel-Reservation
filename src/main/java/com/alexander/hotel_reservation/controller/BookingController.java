@@ -4,6 +4,7 @@ import com.alexander.hotel_reservation.dto.BookingDto;
 import com.alexander.hotel_reservation.entity.Booking;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.service.BookingService;
+import com.alexander.hotel_reservation.service.PaymentService;
 import com.alexander.hotel_reservation.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,10 +19,12 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final UserService userService;
+    private final PaymentService paymentService;
 
-    public BookingController(BookingService bookingService, UserService userService) {
+    public BookingController(BookingService bookingService, UserService userService, PaymentService paymentService) {
         this.bookingService = bookingService;
         this.userService = userService;
+        this.paymentService = paymentService;
     }
 
     // SHOW BOOKING FORM
@@ -56,12 +59,15 @@ public class BookingController {
             return "redirect:/login";
         }
 
+        // get logged in user
         String email = authentication.getName();
         User user = userService.findByEmail(email);
 
+        // send user back to view
         model.addAttribute("booking", dto);
         model.addAttribute("user", user);
 
+        // validate dates
         if (dto.getCheckIn().isBefore(java.time.LocalDate.now())) {
             model.addAttribute("error", "You cannot book past dates");
             return "booking-form";
@@ -72,6 +78,7 @@ public class BookingController {
             return "booking-form";
         }
 
+        // create booking
         boolean success = bookingService.createBooking(dto, user);
 
         if (!success) {
@@ -79,7 +86,22 @@ public class BookingController {
             return "booking-form";
         }
 
-        model.addAttribute("success", "Booking successful (PENDING approval)");
+        // get created booking (simple approach: latest user booking)
+        List<Booking> bookings = bookingService.getBookingsByUser(user.getId());
+        Booking latestBooking = bookings.get(bookings.size() - 1);
+
+        // initialize payment using paystack
+        String paymentUrl = paymentService.initializePayment(
+                user.getEmail(),
+                latestBooking.getTotalPrice(),
+                latestBooking.getPaymentReference()
+        );
+
+        // send data to html
+        model.addAttribute("success", "booking successful. proceed to payment");
+        model.addAttribute("paymentUrl", paymentUrl);
+        model.addAttribute("bookingCode", latestBooking.getBookingCode());
+
         return "booking-form";
     }
 
@@ -143,4 +165,16 @@ public class BookingController {
 
         return "booking-history";
     }
+
+    @GetMapping("/history/search")
+    public String searchBookings(@RequestParam String name, Model model) {
+
+        List<Booking> bookings =
+                bookingService.searchBookingsByCustomerName(name);
+
+        model.addAttribute("bookings", bookings);
+
+        return "booking-history";
+    }
+
 }

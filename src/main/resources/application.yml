@@ -42,3 +42,8 @@ logging:
     org:
       hibernate:
         SQL: DEBUG
+
+paystack:
+  secret-key: ${PAYSTACK_SECRET_KEY}
+  base-url: https://api.paystack.co
+  callback-url: http://localhost:9090/payments/verify

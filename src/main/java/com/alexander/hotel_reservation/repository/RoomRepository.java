@@ -4,6 +4,7 @@ import com.alexander.hotel_reservation.entity.Room;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -11,12 +12,16 @@ import java.util.List;
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     //  get all available rooms
-    @Query(value = "select * from room where available = true", nativeQuery = true)
+    @Query(value = "SELECT * FROM room WHERE available = true", nativeQuery = true)
     List<Room> findAvailableRooms();
 
     //  get room by type search
-    @Query(value = "select * from room where lower(room_type) like lower(concat('%', :type, '%'))", nativeQuery = true)
+    @Query(value = "SELECT * FROM room WHERE lower(room_type) LIKE lower(concat('%', :type, '%'))", nativeQuery = true)
     List<Room> searchByRoomType(@Param("type") String type);
-//    List<Room> findByRoomTypeContainingIgnoreCase(String type);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE room SET available = false WHERE id = :roomId", nativeQuery = true)
+    void makeRoomUnavailable(@Param("roomId") Long roomId);
 
 }

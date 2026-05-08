@@ -18,10 +18,16 @@ public class EmailServiceImpl implements EmailService {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
 
+            // sender email
             message.setFrom("houseoface81@gmail.com");
+
+            // receiver email
             message.setTo(toEmail);
+
+            // subject line
             message.setSubject("Booking Update - " + status);
 
+            // email body
             String body = "Hello,\n\n" +
                     "Your booking (" + bookingCode + ") status is now: " + status + "\n\n" +
                     "Thank you for choosing our hotel.";

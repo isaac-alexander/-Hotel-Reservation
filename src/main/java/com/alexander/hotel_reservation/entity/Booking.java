@@ -1,6 +1,7 @@
 package com.alexander.hotel_reservation.entity;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -22,13 +23,13 @@ public class Booking {
 
     private String status; // PENDING, CONFIRMED, CANCELLED, CHECKED_IN, CHECKED_OUT
 
-    private String paymentStatus; // PENDING, PAID, FAILED
-
-    private String paymentReference;
-
     private String checkInTime;
 
     private String checkOutTime;
+
+    private String paymentReference;
+
+    private String paymentStatus;
 
     // ensure the database always has values
     @Column(nullable = false, unique = true)
@@ -113,8 +114,23 @@ public class Booking {
         return totalPrice;
     }
 
-    public void setTotalPrice(Double totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
 
+    public String getPaymentReference() {
+        return paymentReference;
+    }
+
+    public void setPaymentReference(String paymentReference) {
+        this.paymentReference = paymentReference;
+    }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 }

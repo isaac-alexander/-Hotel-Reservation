@@ -92,6 +92,13 @@ public class BookingServiceImpl implements BookingService {
                 .substring(0, 8)
                 .toUpperCase();
 
+        // generate payment reference
+        String reference = "PAY-" +
+                UUID.randomUUID()
+                        .toString()
+                        .substring(0, 10)
+                        .toUpperCase();
+
         // create new booking object
         Booking newBooking = new Booking();
 
@@ -102,18 +109,18 @@ public class BookingServiceImpl implements BookingService {
 
         newBooking.setTotalPrice(totalPrice);
         newBooking.setBookingCode(code);
+        // payment details
+        newBooking.setPaymentStatus("PENDING");
+        newBooking.setPaymentReference(reference);
 
-        // default status
+        // booking status
         newBooking.setStatus("PENDING");
 
         // save booking
         bookingRepository.save(newBooking);
 
-        emailService.sendBookingStatusEmail(
-                user.getEmail(),
-                "PENDING",
-                newBooking.getBookingCode()
-        );
+        // make room unavailable immediately after booking
+        roomRepository.makeRoomUnavailable(bookingDto.getRoomId());
 
         return true; // success
     }
@@ -210,4 +217,10 @@ public class BookingServiceImpl implements BookingService {
 
         return bookingOptional.orElse(null); // return booking or null
     }
+
+    @Override
+    public List<Booking> searchBookingsByCustomerName(String name) {
+        return bookingRepository.searchByCustomerName(name);
+    }
+
 }

@@ -21,19 +21,37 @@
 
     <div class="card p-3 shadow-sm table-responsive">
 
+        <form method="get"
+              th:action="@{/bookings/history/search}"
+              class="mb-3">
+
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   placeholder="Search customer name">
+
+            <button class="btn btn-primary mt-2">
+                Search
+            </button>
+
+        </form>
+
         <table class="table table-hover">
 
             <thead class="table-dark">
-            <tr>
-                <th>Room</th>
-                <th>Check In</th>
-                <th>Check Out</th>
-                <th>Status</th>
-                <th>Code</th>
-                <th>Total Price</th>
-
-                <th sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')">Customer</th>                <th>Actions</th>
-            </tr>
+                <tr>
+                    <th>Room</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Booking Status</th>
+                    <th>Payment Status</th>
+                    <th>Booking Code</th>
+                    <th>Payment Ref</th>
+                    <th>Total Price</th>
+                    <th sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')">
+                        Customer</th>
+                    <th>Actions</th>
+                </tr>
             </thead>
 
             <tbody>
@@ -41,38 +59,97 @@
             <tr th:each="b : ${bookings}">
 
                 <td th:text="${b.roomId}"></td>
-                <td th:text="${b.checkIn}"></td>
-                <td th:text="${b.checkOut}"></td>
-                <td th:text="${b.status}"></td>
-                <td th:text="${b.bookingCode}"></td>
-                <td th:text="${b.totalPrice}"></td>
 
+                <td th:text="${b.checkIn}"></td>
+
+                <td th:text="${b.checkOut}"></td>
+
+                <!-- booking status -->
+                <td>
+
+        <span th:if="${b.status == 'PENDING'}"
+              class="badge bg-warning">
+            PENDING
+        </span>
+
+                    <span th:if="${b.status == 'CONFIRMED'}"
+                          class="badge bg-success">
+            CONFIRMED
+        </span>
+
+                    <span th:if="${b.status == 'REJECTED'}"
+                          class="badge bg-danger">
+            REJECTED
+        </span>
+
+                    <span th:if="${b.status == 'CANCELLED'}"
+                          class="badge bg-secondary">
+            CANCELLED
+        </span>
+
+                    <span th:if="${b.status == 'CHECKED_IN'}"
+                          class="badge bg-primary">
+            CHECKED IN
+        </span>
+
+                    <span th:if="${b.status == 'CHECKED_OUT'}"
+                          class="badge bg-dark">
+            CHECKED OUT
+        </span>
+
+                </td>
+
+                <!-- payment status -->
+                <td>
+
+        <span th:if="${b.paymentStatus == 'PAID'}"
+              class="badge bg-success">
+            PAID
+        </span>
+
+                    <span th:if="${b.paymentStatus == 'PENDING'}"
+                          class="badge bg-warning text-dark">
+            PENDING
+        </span>
+
+                </td>
+
+                <td th:text="${b.bookingCode}"></td>
+
+                <td th:text="${b.paymentReference}"></td>
+
+                <td>
+                    ₦<span th:text="${b.totalPrice}"></span>
+                </td>
+
+                <!-- customer -->
                 <td sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
                     th:text="${b.user.name}">
                 </td>
 
-                <td>
-
-                    <!-- UPDATE - ONLY SHOW FOR PENDING -->
-
+                <!-- actions -->
                 <td>
 
                     <!-- CONFIRM -->
                     <form th:action="@{'/bookings/confirm/' + ${b.id}}"
                           method="post"
                           sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
-                          th:if="${b.status == 'PENDING'}"
-                          style="display:inline;">
-                        <button class="btn btn-success btn-sm">Confirm</button>
+                          th:if="${b.status == 'PENDING'}">
+
+                        <button class="btn btn-success btn-sm">CONFIRM</button>
+
+                    </form>
+
                     </form>
 
                     <!-- REJECT -->
                     <form th:action="@{'/bookings/reject/' + ${b.id}}"
                           method="post"
                           sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
-                          th:if="${b.status == 'PENDING'}"
-                          style="display:inline;">
-                        <button class="btn btn-danger btn-sm">Reject</button>
+                          th:if="${b.status == 'PENDING'}">
+
+                        <button class="btn btn-danger btn-sm">REJECT</button>
+
                     </form>
 
                     <!-- CANCEL -->
@@ -81,33 +158,36 @@
                           sec:authorize="hasRole('CUSTOMER')"
                           th:if="${b.status == 'PENDING'}"
                           style="display:inline;">
-                        <button class="btn btn-warning btn-sm">Cancel</button>
+
+                        <button class="btn btn-warning btn-sm">
+                            CANCEL
+                        </button>
+
                     </form>
 
                     <!-- CHECK IN -->
                     <form th:action="@{'/bookings/checkin/' + ${b.id}}"
                           method="post"
-                          sec:authorize="hasRole('RECEPTIONIST')"
-                          th:if="${b.status == 'CONFIRMED'}"
-                          style="display:inline;">
-                        <button class="btn btn-primary btn-sm">Check In</button>
+                          sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                          th:if="${b.status == 'CONFIRMED'}">
+
+                        <button class="btn btn-primary btn-sm">CHECK IN</button>
+
                     </form>
 
                     <!-- CHECK OUT -->
                     <form th:action="@{'/bookings/checkout/' + ${b.id}}"
                           method="post"
-                          sec:authorize="hasRole('RECEPTIONIST')"
-                          th:if="${b.status == 'CHECKED_IN'}"
-                          style="display:inline;">
-                        <button class="btn btn-warning btn-sm">Check Out</button>
+                          sec:authorize="hasAnyRole('ADMIN','RECEPTIONIST')"
+                          th:if="${b.status == 'CHECKED_IN'}">
+
+                        <button class="btn btn-warning btn-sm"> CHECK OUT</button>
+
                     </form>
 
                 </td>
 
-                </td>
-
             </tr>
-
             </tbody>
 
         </table>

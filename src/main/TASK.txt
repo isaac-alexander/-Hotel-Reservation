@@ -1,25 +1,13 @@
-Payment Integration: Support for gateways like Remita or Paystack for secure
-transactions.
-
-Authentication and Security Setup Remita requires secure API calls by hashing payment details with your API Key
-
-Transaction Initialization (RRR Generation) Before collecting payment, your backend must call the Remita API to initiate a transaction and generate a unique RRR number
-
-Implementation Steps in Spring Boot
-
-Configuration: Store your REMITA_MERCHANT_ID, REMITA_API_KEY, and REMITA_BASE_URL in environment variables or a secure configuration file.
-
-Service Layer: Create a service class that uses RestTemplate or WebClient to send HTTPS POST requests to Remita. Implement the SHA512 hashing logic using Java's MessageDigest class to create the authorization token.
-
-Controller: Expose an endpoint that accepts payment initiation requests, calls the Remita service to generate the RRR, and returns the payment link or reference to the frontend.
-
-Webhook Handling: Implement a callback endpoint to receive transaction status updates from Remita, verifying the signature to ensure the notification is legitimate before updating your database
+Action button Check in and Check out for admin and receptionist
 
 
-Never expose API keys in frontend code or version control.
+Booking History has a search for admin can search for customer name
+to see all bookings
 
-Validate amounts server-side to prevent price manipulation attacks.
+When booked change room to unavailable and disable all buttons for customer
 
-Use HTTPS for all API communications.
+Clear all forms after submitting form in all html files
 
-Handle errors gracefully by checking Remita's response codes and providing clear feedback to users.
+Disable button after booking
+
+Change Confirm Booking Button to SELECT DAYS OF STAY

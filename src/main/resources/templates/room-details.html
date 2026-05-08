@@ -31,9 +31,15 @@
         <a sec:authorize="hasRole('CUSTOMER')"
            th:if="${room.available}"
            th:href="@{'/bookings/new/' + ${room.id}}"
-           class="btn btn-success w-100 mt-3">
+           class="btn btn-success">
             BOOK NOW
         </a>
+
+        <button class="btn btn-secondary w-100"
+                th:if="${!room.available}"
+                disabled>
+            NOT AVAILABLE
+        </button>
 
         <!-- ADMIN -->
         <div sec:authorize="hasRole('ADMIN')" class="d-flex gap-2 mt-3">

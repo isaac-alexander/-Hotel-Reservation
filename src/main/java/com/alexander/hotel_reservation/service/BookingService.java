@@ -30,4 +30,7 @@ public interface BookingService {
     void checkOut(Long bookingId);
 
     Booking getBookingById(Long id);
+
+    List<Booking> searchBookingsByCustomerName(String name);
+
 }

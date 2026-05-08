@@ -10,18 +10,18 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     // find user by email
-    @Query(value = "select * from users where email = :email", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE email = :email", nativeQuery = true)
     Optional<User> findByEmail(@Param("email") String email);
 
     // login query
-    @Query(value = "select * from users where email = :email and password = :password", nativeQuery = true)
+    @Query(value = "SELECT * FROM users WHERE email = :email and password = :password", nativeQuery = true)
     Optional<User> login(@Param("email") String email,
                          @Param("password") String password);
 
     // insert user manually
     @Modifying
     @Transactional
-    @Query(value = "insert into users(name,email,password,role) values(:name,:email,:password,:role)", nativeQuery = true)
+    @Query(value = "INSERT INTO users(name,email,password,role) VALUES(:name,:email,:password,:role)", nativeQuery = true)
     void insertUser(@Param("name") String name,
                     @Param("email") String email,
                     @Param("password") String password,

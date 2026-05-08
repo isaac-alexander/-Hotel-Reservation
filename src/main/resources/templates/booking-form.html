@@ -35,7 +35,18 @@
             <input type="date" th:field="*{checkIn}" class="form-control mb-3" required>
             <input type="date" th:field="*{checkOut}" class="form-control mb-3" required>
 
-            <button class="btn btn-success w-100">CONFIRM BOOKING</button>
+            <button type="submit"
+                    class="btn btn-success w-100"
+                    onclick="this.disabled=true; this.innerText='Processing...'; this.form.submit();">
+                SELECT DAYS OF STAY
+            </button>
+
+            <!-- payment link -->
+            <div th:if="${paymentUrl}" class="mt-3">
+                <a th:href="${paymentUrl}" class="btn btn-primary w-100">
+                    proceed to payment
+                </a>
+            </div>
 
         </form>
 
