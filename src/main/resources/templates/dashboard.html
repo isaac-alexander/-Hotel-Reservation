@@ -12,13 +12,13 @@
 <body>
 
 <!-- SIDEBAR -->
-<div th:replace="fragments/sidebar :: sidebar"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 <!-- MAIN -->
 <div class="main-content">
 
-    <!-- NAVBAR -->
-    <div th:replace="fragments/navbar :: navbar"></div>
+        <!-- NAVBAR -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="d-flex justify-content-between mb-3">
         <h4>HOME</h4>
@@ -42,8 +42,14 @@
                placeholder="Search room type (e.g. Single, Queen)"
                required>
 
-        <button class="btn btn-dark">Search</button>
+        <button type="submit"
+                class="btn btn-dark"
+                onclick="showSpinner(this)">
 
+            <span class="button-text">Search</span>
+
+            <span class="spinner-border spinner-border-sm d-none"></span>
+        </button>
     </form>
 
     <!-- CAROUSEL -->
@@ -149,6 +155,8 @@
         document.querySelectorAll('.auto-hide').forEach(e => e.style.display='none');
     }, 5000);
 </script>
+
+<script th:src="@{/css/js/spinner.js}"></script>
 
 </body>
 </html>

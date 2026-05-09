@@ -10,11 +10,11 @@
 
 <body>
 
-<div th:replace="fragments/sidebar :: sidebar"></div>
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
 <div class="main-content">
 
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="card p-4 shadow-sm">
 
@@ -37,8 +37,22 @@
 
             <button type="submit"
                     class="btn btn-success w-100"
-                    onclick="this.disabled=true; this.innerText='Processing...'; this.form.submit();">
-                SELECT DAYS OF STAY
+                    onclick="showSpinner(this)"
+                    th:if="${paymentUrl == null}">
+
+                <span class="button-text">
+                    SELECT DAYS OF STAY
+                </span>
+
+                <span class="spinner-border spinner-border-sm d-none"
+                      role="status">
+                </span>
+            </button>
+
+            <button class="btn btn-secondary w-100"
+                    th:if="${paymentUrl != null}"
+                    disabled>
+                BOOKED
             </button>
 
             <!-- payment link -->
@@ -53,6 +67,24 @@
     </div>
 
 </div>
+<script>
+
+    function showSpinner(button) {
+
+        // disable button
+        button.disabled = true;
+
+        // change text
+        button.querySelector(".button-text").innerText = "Processing...";
+
+        // show spinner
+        button.querySelector(".spinner-border")
+              .classList.remove("d-none");
+    }
+
+</script>
+
+<script th:src="@{/css/js/spinner.js}"></script>
 
 </body>
 </html>

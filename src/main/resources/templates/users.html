@@ -11,14 +11,15 @@
 
 <body>
 
-<!-- SIDEBAR -->
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
-<!-- MAIN CONTENT -->
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- MAIN -->
 <div class="main-content">
 
     <!-- NAVBAR -->
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <!-- CARD WRAPPER -->
     <div class="card p-4 shadow-sm">
@@ -70,24 +71,26 @@
                               method="post"
                               style="display:inline;">
 
-                            <button class="btn btn-sm btn-danger"
-                                    onclick="return confirm('Delete this user?')">
-                                Delete
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="showSpinner(this)">
+
+                                <span class="button-text">DELETE</span>
+
+                                <span class="spinner-border spinner-border-sm d-none"></span>
                             </button>
-
                         </form>
-
                     </td>
-
                 </tr>
                 </tbody>
-
             </table>
         </div>
 
     </div>
 
 </div>
+
+<script th:src="@{/css/js/spinner.js}"></script>
 
 </body>
 </html>

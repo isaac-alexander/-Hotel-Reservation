@@ -7,13 +7,13 @@ import com.alexander.hotel_reservation.repository.BookingRepository;
 import com.alexander.hotel_reservation.repository.RoomRepository;
 import com.alexander.hotel_reservation.service.BookingService;
 import com.alexander.hotel_reservation.service.EmailService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alexander.hotel_reservation.entity.Room;
 
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -184,7 +184,14 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus("CHECKED_IN"); // update status
 
             // store current time
-            booking.setCheckInTime(LocalDateTime.now().toString());
+            // format date and time
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
+
+            String formattedTime =
+                    LocalDateTime.now().format(formatter);
+
+            booking.setCheckInTime(formattedTime);
 
             bookingRepository.save(booking);
         }
@@ -203,7 +210,14 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus("CHECKED_OUT"); // update status
 
             // store current time
-            booking.setCheckOutTime(LocalDateTime.now().toString());
+            // format date and time
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
+
+            String formattedTime =
+                    LocalDateTime.now().format(formatter);
+
+            booking.setCheckOutTime(formattedTime);
 
             bookingRepository.save(booking);
         }

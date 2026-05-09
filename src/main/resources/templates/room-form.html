@@ -11,11 +11,15 @@
 
 <body>
 
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
+
+<!-- MAIN -->
 <div class="main-content">
 
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <!-- NAVBAR -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <div class="card p-4 col-md-6 mx-auto">
 
@@ -35,13 +39,20 @@
 
             <input th:field="*{description}" class="form-control mb-2" required placeholder="Description">
 
-            <button class="btn btn-success w-100">SAVE</button>
+            <button type="submit"
+                    class="btn btn-success w-100"
+                    onclick="showSpinner(this)">
 
+                <span class="button-text">SAVE ROOM</span>
+
+                <span class="spinner-border spinner-border-sm d-none"></span>
+            </button>
         </form>
-
     </div>
 
 </div>
+
+<script th:src="@{/css/js/spinner.js}"></script>
 
 </body>
 </html>

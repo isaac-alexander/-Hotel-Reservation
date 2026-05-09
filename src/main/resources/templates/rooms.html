@@ -11,11 +11,14 @@
 
 <body>
 
-<div th:replace="fragments/sidebar :: sidebar"></div>
+<!-- SIDEBAR -->
+<div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
+<!-- MAIN -->
 <div class="main-content">
 
-    <div th:replace="fragments/navbar :: navbar"></div>
+    <!-- NAVBAR -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <h3>ALL ROOMS</h3>
 

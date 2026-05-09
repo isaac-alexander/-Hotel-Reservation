@@ -50,6 +50,28 @@ public class RoomController {
         return "rooms";
     }
 
+    // search rooms
+    @GetMapping("/search")
+    public String searchRooms(@RequestParam("keyword") String keyword,
+                              Model model,
+                              Authentication authentication) {
+
+        if (authentication == null) {
+            return "redirect:/login";
+        }
+
+        String email = authentication.getName();
+        User user = userService.findByEmail(email);
+
+        List<Room> rooms =
+                roomRepository.searchByRoomType(keyword);
+
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("user", user);
+
+        return "rooms";
+    }
+
     // view single room
     @GetMapping("/{id}")
     public String singleRoom(@PathVariable Long id,
