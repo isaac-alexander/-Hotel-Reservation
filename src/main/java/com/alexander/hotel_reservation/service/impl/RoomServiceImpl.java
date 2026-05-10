@@ -31,38 +31,41 @@ public class RoomServiceImpl implements RoomService {
         // default availability true if not set
         room.setAvailable(roomDto.isAvailable());
 
-        roomRepository.save(room);
+        // save room using SQL query
+        roomRepository.createRoom(
+                room.getRoomType(),
+                room.getPrice(),
+                room.getDescription(),
+                room.isAvailable()
+        );
     }
 
     // update room
     @Override
     public void updateRoom(Long roomId, RoomDto roomDto) {
 
-        Optional<Room> roomOptional = roomRepository.findById(roomId);
-
-        if (roomOptional.isPresent()) {
-
-            Room room = roomOptional.get();
-
-            room.setRoomType(roomDto.getRoomType());
-            room.setPrice(roomDto.getPrice());
-            room.setDescription(roomDto.getDescription());
-            room.setAvailable(roomDto.isAvailable());
-
-            roomRepository.save(room);
-        }
+        // update room using SQL query
+        roomRepository.updateRoom(
+                roomId,
+                roomDto.getRoomType(),
+                roomDto.getPrice(),
+                roomDto.getDescription(),
+                roomDto.isAvailable()
+        );
     }
 
     // delete room
     @Override
     public void deleteRoom(Long roomId) {
-        roomRepository.deleteById(roomId);
+        // delete room using SQL query
+        roomRepository.deleteRoom(roomId);
     }
 
     // get all rooms
     @Override
     public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+        // get all rooms using SQL query
+        return roomRepository.getAllRooms();
     }
 
     // get available rooms
@@ -75,7 +78,8 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room getRoomById(Long roomId) {
 
-        Optional<Room> roomOptional = roomRepository.findById(roomId);
+        // get room using SQL query
+        Optional<Room> roomOptional = roomRepository.getRoomById(roomId);
 
         if (roomOptional.isPresent()) {
             return roomOptional.get();

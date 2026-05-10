@@ -41,8 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/bookings/reject/**").hasAnyRole("ADMIN", "RECEPTIONIST")
 
                         // RECEPTIONIST ONLY
-                        .requestMatchers("/bookings/checkin/**").hasRole("RECEPTIONIST")
-                        .requestMatchers("/bookings/checkout/**").hasRole("RECEPTIONIST")
+                        .requestMatchers("/bookings/checkin/**").hasAnyRole("ADMIN", "RECEPTIONIST")
+                        .requestMatchers("/bookings/checkout/**").hasAnyRole("ADMIN", "RECEPTIONIST")
 
                         // everything else
                         .anyRequest().authenticated()

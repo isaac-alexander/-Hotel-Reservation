@@ -39,7 +39,14 @@ public class UserServiceImpl implements UserService {
         if (user.getRole() == null) {
             user.setRole("customer");
         }
-        userRepository.save(user);
+
+        // save user using SQL query
+        userRepository.insertUser(
+                user.getName(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getRole()
+        );
     }
 
     @Override
@@ -49,39 +56,51 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        // get all users using SQL query
+        return userRepository.getAllUsers();
     }
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.getUserById(id).orElse(null);
     }
 
     @Override
     public void updateUser(Long id, CreateUserDto dto) {
 
-        Optional<User> optionalUser = userRepository.findById(id);
+        // get user from database
+        Optional<User> optionalUser =
+                userRepository.getUserById(id);
 
         if (optionalUser.isPresent()) {
 
             User user = optionalUser.get();
 
-            user.setName(dto.getName());
-            user.setEmail(dto.getEmail());
-            user.setRole(dto.getRole());
+            // keep old password
+            String password = user.getPassword();
 
-            // update password only if provided
-            if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
-                user.setPassword(passwordEncoder.encode(dto.getPassword()));
+            // encode new password if user entered one
+            if (dto.getPassword() != null &&
+                    !dto.getPassword().isEmpty()) {
+
+                password =
+                        passwordEncoder.encode(dto.getPassword());
             }
 
-            userRepository.save(user);
+            // update user using SQL query
+            userRepository.updateUser(
+                    id,
+                    dto.getName(),
+                    dto.getEmail(),
+                    password,
+                    dto.getRole()
+            );
         }
     }
 
     @Override
     public void deleteUser(Long userId) {
-        userRepository.deleteById(userId);
+        userRepository.deleteUser(userId);
     }
 
 }

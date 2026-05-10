@@ -116,8 +116,18 @@ public class BookingServiceImpl implements BookingService {
         // booking status
         newBooking.setStatus("PENDING");
 
-        // save booking
-        bookingRepository.save(newBooking);
+        // save booking using SQL query
+        bookingRepository.createBooking(
+                user.getId(),
+                bookingDto.getRoomId(),
+                bookingDto.getCheckIn(),
+                bookingDto.getCheckOut(),
+                totalPrice,
+                code,
+                "PENDING",
+                reference,
+                "PENDING"
+        );
 
         // make room unavailable immediately after booking
         roomRepository.makeRoomUnavailable(bookingDto.getRoomId());
@@ -128,112 +138,121 @@ public class BookingServiceImpl implements BookingService {
     // GET BOOKINGS FOR USER
     @Override
     public List<Booking> getBookingsByUser(Long userId) {
+
+        // get bookings for one user
         return bookingRepository.findByUser_Id(userId);
     }
 
+
+    // GET BOOKINGS BASED ON USER ROLE
     @Override
     public List<Booking> getBookingsForUser(User user) {
 
-        // ADMIN & RECEPTIONIST - see all bookings
-        if (user.getRole().equals("admin") || user.getRole().equals("receptionist")) {
-            return bookingRepository.findAll();
+        // admin and receptionist can see all bookings
+        if (user.getRole().equals("admin") ||
+                user.getRole().equals("receptionist")) {
+
+            return bookingRepository.getAllBookings();
         }
 
-        // CUSTOMER - only their bookings
+        // customer can only see their own bookings
         return bookingRepository.findByUser_Id(user.getId());
     }
 
     // GET ALL BOOKINGS ADMIN / RECEPTIONIST
     @Override
     public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+
+        // return all bookings
+        return bookingRepository.getAllBookings();
     }
 
-    // UPDATE STATUS - CONFIRM / REJECT / CANCEL
+    // UPDATE STATUS
     @Override
     public void updateStatus(Long bookingId, String status) {
 
-        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        // get booking from database
+        Optional<Booking> bookingOptional = bookingRepository.getBookingById(bookingId);
 
+        // check if booking exists
         if (bookingOptional.isPresent()) {
 
             Booking booking = bookingOptional.get();
 
-            booking.setStatus(status); // update status
+            // update booking status using SQL query
+            bookingRepository.updateBookingStatus(bookingId, status);
 
-            bookingRepository.save(booking); // save changes
-
-            // SEND EMAIL
+            // get customer email
             String email = booking.getUser().getEmail();
+
+            // get booking code
             String bookingCode = booking.getBookingCode();
 
+            // send email
             emailService.sendBookingStatusEmail(email, status, bookingCode);
         }
     }
 
-    // CHECK-IN
+
+    // CHECK IN
     @Override
     public void checkIn(Long bookingId) {
 
-        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        // get booking from database
+        Optional<Booking> bookingOptional = bookingRepository.getBookingById(bookingId);
 
+        // check if booking exists
         if (bookingOptional.isPresent()) {
 
-            Booking booking = bookingOptional.get();
+            // format current date and time
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
 
-            booking.setStatus("CHECKED_IN"); // update status
+            // current formatted time
+            String formattedTime = LocalDateTime.now().format(formatter);
 
-            // store current time
-            // format date and time
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
-
-            String formattedTime =
-                    LocalDateTime.now().format(formatter);
-
-            booking.setCheckInTime(formattedTime);
-
-            bookingRepository.save(booking);
+            // update check in using SQL query
+            bookingRepository.updateCheckIn(bookingId, formattedTime);
         }
     }
 
-    // check - out
+    // CHECK OUT
     @Override
     public void checkOut(Long bookingId) {
 
-        Optional<Booking> bookingOptional = bookingRepository.findById(bookingId);
+        // get booking from database
+        Optional<Booking> bookingOptional = bookingRepository.getBookingById(bookingId);
 
+        // check if booking exists
         if (bookingOptional.isPresent()) {
 
-            Booking booking = bookingOptional.get();
+            // format current date and time
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
 
-            booking.setStatus("CHECKED_OUT"); // update status
+            // current formatted time
+            String formattedTime = LocalDateTime.now().format(formatter);
 
-            // store current time
-            // format date and time
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("dd MMM yyyy hh:mm a");
-
-            String formattedTime =
-                    LocalDateTime.now().format(formatter);
-
-            booking.setCheckOutTime(formattedTime);
-
-            bookingRepository.save(booking);
+            // update check out using SQL query
+            bookingRepository.updateCheckOut(bookingId, formattedTime);
         }
     }
 
-    // get single booking
+    // GET SINGLE BOOKING
     @Override
     public Booking getBookingById(Long id) {
 
-        Optional<Booking> bookingOptional = bookingRepository.findById(id);
+        // get booking using SQL query
+        Optional<Booking> bookingOptional = bookingRepository.getBookingById(id);
 
-        return bookingOptional.orElse(null); // return booking or null
+        // return booking if found
+        return bookingOptional.orElse(null);
     }
 
+
+    // SEARCH BOOKINGS
     @Override
     public List<Booking> searchBookingsByCustomerName(String name) {
+
+        // search booking using customer name
         return bookingRepository.searchByCustomerName(name);
     }
 
