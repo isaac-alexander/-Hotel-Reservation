@@ -42,25 +42,25 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> existingBookings =
                 bookingRepository.findByRoomId(bookingDto.getRoomId());
 
-        // loop through existing bookings
-        for (Booking existing : existingBookings) {
+        // check if any booking overlaps
+        boolean overlapExists = existingBookings.stream()
 
-            String status = existing.getStatus();
+                // ignore cancelled and rejected bookings
+                .filter(existing ->
+                        !existing.getStatus().equals("CANCELLED") &&
+                                !existing.getStatus().equals("REJECTED")
+                )
 
-            // ignore cancelled or rejected bookings
-            if (status.equals("CANCELLED") || status.equals("REJECTED")) {
-                continue;
-            }
+                // check if any booking overlaps
+                .anyMatch(existing ->
 
-            //  overlap
-            boolean overlap =
-                    bookingDto.getCheckIn().isBefore(existing.getCheckOut()) &&
-                            bookingDto.getCheckOut().isAfter(existing.getCheckIn());
+                        bookingDto.getCheckIn().isBefore(existing.getCheckOut()) &&
+                                bookingDto.getCheckOut().isAfter(existing.getCheckIn())
+                );
 
-            // if overlap exists - booking not allowed
-            if (overlap) {
-                return false;
-            }
+        // if overlap exists
+        if (overlapExists) {
+            return false;
         }
 
         // get room from database

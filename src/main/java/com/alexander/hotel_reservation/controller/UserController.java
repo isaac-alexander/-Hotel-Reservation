@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 public class UserController {
@@ -22,8 +24,16 @@ public class UserController {
     }
 
     private boolean isAdminOrReceptionist(User user) {
-        return user.getRole().equals("admin") ||
-                user.getRole().equals("receptionist");
+
+        // creates temporary list.
+        return List.of("admin", "receptionist")
+
+                .stream()
+
+                // checks if user role exists inside list.
+                .anyMatch(role ->
+                        role.equals(user.getRole())
+                );
     }
 
     // show create user page

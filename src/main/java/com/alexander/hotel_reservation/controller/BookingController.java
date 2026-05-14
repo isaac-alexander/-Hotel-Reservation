@@ -88,7 +88,14 @@ public class BookingController {
 
         // get created booking (simple approach: latest user booking)
         List<Booking> bookings = bookingService.getBookingsByUser(user.getId());
-        Booking latestBooking = bookings.get(bookings.size() - 1);
+        Booking latestBooking = bookings.stream()
+
+                // get last booking
+                // keeps replacing first with second until last item remains.
+                .reduce((first, second) -> second)
+
+                // return null if empty
+                .orElse(null);
 
         // initialize payment using paystack
         String paymentUrl = paymentService.initializePayment(
