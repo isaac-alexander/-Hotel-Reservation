@@ -185,3 +185,4 @@ Password : 12345
 ---
 
 ![image alt](https://github.com/isaac-alexander/-Hotel-Reservation/blob/efb0ba5a079b99a805598b4a35544539511b2588/login.png)
+![image alt](https://github.com/isaac-alexander/-Hotel-Reservation/blob/b676ebc13033ed347ae9e3d18751dcc76c9666b6/admin_dashboard.png)
