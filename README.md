@@ -183,6 +183,14 @@ Email : houseoface81@gmail.com
 ---
 Password : 12345
 ---
-
+## LOGIN
 ![image alt](https://github.com/isaac-alexander/-Hotel-Reservation/blob/efb0ba5a079b99a805598b4a35544539511b2588/login.png)
+
+## DASHBOARD 
 ![image alt](https://github.com/isaac-alexander/-Hotel-Reservation/blob/b676ebc13033ed347ae9e3d18751dcc76c9666b6/admin_dashboard.png)
+
+## BOOKING
+![image alt](https://github.com/isaac-alexander/-Hotel-Reservation/blob/aa9857ce3580d1776bc79621b0af844ac75b8944/booking_confirmed.png)
+
+## HISTORY
+![image alt](https://github.com/isaac-alexander/-Hotel-Reservation/blob/aa9857ce3580d1776bc79621b0af844ac75b8944/admin_booking_history.png)
