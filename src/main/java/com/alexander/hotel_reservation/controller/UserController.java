@@ -3,6 +3,7 @@ package com.alexander.hotel_reservation.controller;
 import com.alexander.hotel_reservation.dto.CreateUserDto;
 import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,16 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    @Autowired
+    UserService userService;
 
     private boolean isAdminOrReceptionist(User user) {
 
@@ -67,7 +66,7 @@ public class UserController {
 
         // get current logged in user
         String email = authentication.getName();
-        User currentUser = userService.findByEmail(email);
+        Optional<User> currentUser = userService.findByEmail(email);
 
         User newUser = new User();
         newUser.setName(dto.getName());
@@ -90,8 +89,18 @@ public class UserController {
 
         if (authentication == null) return "redirect:/login";
 
-        User currentUser = userService.findByEmail(authentication.getName());
+        Optional<User> optionalUser =
+                userService.findByEmail(authentication.getName());
 
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User currentUser = optionalUser.get();
+
+        // check role
         if (!isAdminOrReceptionist(currentUser)) {
             return "redirect:/dashboard";
         }
@@ -108,8 +117,18 @@ public class UserController {
 
         if (authentication == null) return "redirect:/login";
 
-        User currentUser = userService.findByEmail(authentication.getName());
+        Optional<User> optionalUser =
+                userService.findByEmail(authentication.getName());
 
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User currentUser = optionalUser.get();
+
+        // check role
         if (!isAdminOrReceptionist(currentUser)) {
             return "redirect:/dashboard";
         }
@@ -136,8 +155,18 @@ public class UserController {
 
         if (authentication == null) return "redirect:/login";
 
-        User currentUser = userService.findByEmail(authentication.getName());
+        Optional<User> optionalUser =
+                userService.findByEmail(authentication.getName());
 
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User currentUser = optionalUser.get();
+
+        // check role
         if (!isAdminOrReceptionist(currentUser)) {
             return "redirect:/dashboard";
         }
@@ -153,11 +182,22 @@ public class UserController {
 
         if (authentication == null) return "redirect:/login";
 
-        User currentUser = userService.findByEmail(authentication.getName());
+        Optional<User> optionalUser =
+                userService.findByEmail(authentication.getName());
 
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User currentUser = optionalUser.get();
+
+        // check role
         if (!isAdminOrReceptionist(currentUser)) {
             return "redirect:/dashboard";
         }
+
 
         userService.deleteUser(id);
 

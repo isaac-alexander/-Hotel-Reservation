@@ -1,5 +1,6 @@
 package com.alexander.hotel_reservation.service.impl;
 
+import com.alexander.hotel_reservation.entity.PaystackResponse;
 import com.alexander.hotel_reservation.service.PaymentService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -50,24 +51,22 @@ public class PaymentServiceImpl implements PaymentService {
         HttpEntity<Map<String, Object>> request =
                 new HttpEntity<>(body, headers);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(
+        ResponseEntity<PaystackResponse> response = restTemplate.postForEntity(
                 baseUrl + "/transaction/initialize",
                 request,
-                Map.class
+                PaystackResponse.class
         );
 
         if (response.getBody() == null) {
             return null;
         }
 
-        Map data = (Map) response.getBody().get("data");
-
-        if (data == null) {
+        if (!response.getBody().isStatus()) {
             return null;
         }
 
         // return payment page url
-        return (String) data.get("authorization_url");
+        return response.getBody().getData().getAuthorizationUrl();
     }
 
     // verify payment

@@ -4,12 +4,13 @@ import com.alexander.hotel_reservation.dto.CreateUserDto;
 import com.alexander.hotel_reservation.entity.User;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
     void register(User user);
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     void deleteUser(Long userId);
 

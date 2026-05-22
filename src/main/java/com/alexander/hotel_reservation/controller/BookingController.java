@@ -6,26 +6,27 @@ import com.alexander.hotel_reservation.entity.User;
 import com.alexander.hotel_reservation.service.BookingService;
 import com.alexander.hotel_reservation.service.PaymentService;
 import com.alexander.hotel_reservation.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/bookings")
 public class BookingController {
 
-    private final BookingService bookingService;
-    private final UserService userService;
-    private final PaymentService paymentService;
+    @Autowired
+    BookingService bookingService;
 
-    public BookingController(BookingService bookingService, UserService userService, PaymentService paymentService) {
-        this.bookingService = bookingService;
-        this.userService = userService;
-        this.paymentService = paymentService;
-    }
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    PaymentService paymentService;
 
     // SHOW BOOKING FORM
     @GetMapping("/new/{roomId}")
@@ -38,7 +39,17 @@ public class BookingController {
         }
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+
+        Optional<User> optionalUser =
+                userService.findByEmail(email);
+
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User user = optionalUser.get();
 
         BookingDto dto = new BookingDto();
         dto.setRoomId(roomId);
@@ -61,7 +72,17 @@ public class BookingController {
 
         // get logged in user
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+
+        Optional<User> optionalUser =
+                userService.findByEmail(email);
+
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User user = optionalUser.get();
 
         // send user back to view
         model.addAttribute("booking", dto);
@@ -163,7 +184,17 @@ public class BookingController {
         }
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+
+        Optional<User> optionalUser =
+                userService.findByEmail(email);
+
+        // check if user exists
+        if (optionalUser.isEmpty()) {
+            return "redirect:/login";
+        }
+
+        // get actual user object
+        User user = optionalUser.get();
 
         List<Booking> bookings = bookingService.getBookingsForUser(user);
 

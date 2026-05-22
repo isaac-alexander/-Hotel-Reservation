@@ -13,21 +13,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/rooms")
 public class RoomController {
 
-    private final RoomService roomService;
-    private final UserService userService;
+    @Autowired
+    RoomService roomService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     private RoomRepository roomRepository;
-
-    public RoomController(RoomService roomService, UserService userService) {
-        this.roomService = roomService;
-        this.userService = userService;
-    }
 
     // view all rooms
     @GetMapping
@@ -39,7 +38,7 @@ public class RoomController {
         }
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+        Optional<User> user = userService.findByEmail(email);
 
         List<Room> rooms = roomService.getAllRooms();
 
@@ -61,7 +60,7 @@ public class RoomController {
         }
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+        Optional<User> user = userService.findByEmail(email);
 
         List<Room> rooms =
                 roomRepository.searchByRoomType(keyword);
@@ -83,7 +82,7 @@ public class RoomController {
         }
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+        Optional<User> user = userService.findByEmail(email);
 
         Room room = roomService.getRoomById(id);
 
@@ -103,7 +102,7 @@ public class RoomController {
         }
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+        Optional<User> user = userService.findByEmail(email);
 
         // only admin allowed
 //        if (!user.getRole().equals("admin")) {
@@ -143,7 +142,7 @@ public class RoomController {
 
 
         String email = authentication.getName();
-        User user = userService.findByEmail(email);
+        Optional<User> user = userService.findByEmail(email);
 
         Room room = roomService.getRoomById(id);
 

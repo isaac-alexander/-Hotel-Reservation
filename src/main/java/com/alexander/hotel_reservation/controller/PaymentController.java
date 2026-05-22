@@ -3,24 +3,22 @@ package com.alexander.hotel_reservation.controller;
 import com.alexander.hotel_reservation.entity.Booking;
 import com.alexander.hotel_reservation.repository.BookingRepository;
 import com.alexander.hotel_reservation.service.PaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/payments")
 public class PaymentController {
 
-    private final PaymentService paymentService;
+    @Autowired
+    PaymentService paymentService;
 
-    private final BookingRepository bookingRepository;
-
-    public PaymentController(PaymentService paymentService,
-                             BookingRepository bookingRepository) {
-
-        this.paymentService = paymentService;
-        this.bookingRepository = bookingRepository;
-    }
+    @Autowired
+    BookingRepository bookingRepository;
 
     // paystack redirects here after payment
     @GetMapping("/verify")
@@ -34,11 +32,11 @@ public class PaymentController {
         if (verified) {
 
             // get booking using payment reference
-            Booking booking =
+            Optional<Booking> booking =
                     bookingRepository.findBookingByPaymentReference(reference);
 
             // if booking exists
-            if (booking != null) {
+            if (booking.isPresent()) {
 
                 // update booking payment using SQL query
                 bookingRepository.updateBookingPayment(

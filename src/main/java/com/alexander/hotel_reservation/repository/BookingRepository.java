@@ -110,7 +110,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     // find booking using payment reference
     @Query(value = "SELECT * FROM bookings WHERE payment_reference = :reference",
             nativeQuery = true)
-    Booking findBookingByPaymentReference(
+    Optional<Booking> findBookingByPaymentReference(
             @Param("reference") String reference
     );
 
